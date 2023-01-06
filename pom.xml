@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.wxy.rpc</groupId>
+  <artifactId>wxy-rpc</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <name>wxy-rpc</name>
+  <url>http://maven.apache.org</url>
+  <modules>
+    <module>provider</module>
+    <module>consumer</module>
+    <module>rpc-client-spring-boot-starter</module>
+    <module>rpc-server-spring-boot-starter</module>
+    <module>rpc-core</module>
+    <module>rpc-server-spring-boot-autoconfigure</module>
+    <module>rpc-server</module>
+    <module>rpc-client</module>
+    <module>rpc-client-spring-boot-autoconfigure</module>
+    <module>provider-api</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
