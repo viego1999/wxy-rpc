@@ -7,17 +7,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="rpc-client-spring-boot-autoconfigure" />
+        <module name="rpc-client-spring-boot" />
         <module name="provider" />
-        <module name="rpc-server-spring-boot-autoconfigure" />
+        <module name="rpc-server-spring-boot" />
         <module name="rpc-server-spring-boot-starter" />
-        <module name="rpc-client" />
         <module name="rpc-client-spring-boot-starter" />
-        <module name="rpc-server" />
         <module name="provider-api" />
         <module name="consumer" />
         <module name="rpc-core" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="rpc-client-spring-boot-autoconfigure" target="1.8" />
+      <module name="rpc-server-spring-boot-autoconfigure" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

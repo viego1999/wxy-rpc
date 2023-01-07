@@ -70,15 +70,20 @@ public class ZookeeperServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public void register(ServiceInfo serviceInfo) throws Exception {
-        ServiceInstance<ServiceInfo> serviceInstance = ServiceInstance.<ServiceInfo>builder()
-                .name(serviceInfo.getServiceName())
-                .address(serviceInfo.getAddress())
-                .port(serviceInfo.getPort())
-                .payload(serviceInfo)
-                .build();
-        serviceDiscovery.registerService(serviceInstance);
-        log.info("Successfully registered [{}] service.", serviceInstance.getName());
+    public void register(ServiceInfo serviceInfo) {
+        try {
+            ServiceInstance<ServiceInfo> serviceInstance = ServiceInstance.<ServiceInfo>builder()
+                    .name(serviceInfo.getServiceName())
+                    .address(serviceInfo.getAddress())
+                    .port(serviceInfo.getPort())
+                    .payload(serviceInfo)
+                    .build();
+            serviceDiscovery.registerService(serviceInstance);
+            log.info("Successfully registered [{}] service.", serviceInstance.getName());
+        } catch (Exception e) {
+            throw new RpcException(String.format("An error occurred when rpc server registering [%s] service.",
+                    serviceInfo.getServiceName()), e);
+        }
     }
 
     @Override

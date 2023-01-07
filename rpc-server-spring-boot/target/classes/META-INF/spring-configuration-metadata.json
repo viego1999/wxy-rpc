@@ -1,0 +1,30 @@
+{
+  "groups": [
+    {
+      "name": "rpc.server",
+      "type": "com.wxy.rpc.server.config.RpcServerProperties",
+      "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "rpc.server.app-name",
+      "type": "java.lang.String",
+      "description": "服务名称",
+      "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
+    },
+    {
+      "name": "rpc.server.port",
+      "type": "java.lang.Integer",
+      "description": "服务启动端口",
+      "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
+    },
+    {
+      "name": "rpc.server.registry-addr",
+      "type": "java.lang.String",
+      "description": "注册中心地址",
+      "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
+    }
+  ],
+  "hints": []
+}

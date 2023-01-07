@@ -14,7 +14,17 @@ public enum MessageType {
     /**
      * 类型 1 表示响应消息
      */
-    RESPONSE((byte) 1);
+    RESPONSE((byte) 1),
+
+    /**
+     * 类型 2 表示心跳检查请求
+     */
+    HEARTBEAT_REQUEST((byte) 2),
+
+    /**
+     * 类型 3 表示心跳检查响应
+     */
+    HEARTBEAT_RESPONSE((byte) 3);
 
     /**
      * 消息类型，<p>

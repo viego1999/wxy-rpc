@@ -22,7 +22,7 @@ public interface ServiceDiscovery {
      * @param serviceName 服务名
      * @return 返回服务提供方信息
      */
-    ServiceInfo discover(String serviceName) throws Exception;
+    ServiceInfo discover(String serviceName);
 
     /**
      * 返回服务的所有提供方，若未实现，默认返回空的 ArrayList

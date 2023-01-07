@@ -10,6 +10,13 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-server-spring-boot-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-core/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-server/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-client/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-server-spring-boot/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-client-spring-boot/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-client-spring-boot-starter/pom.xml" />
       </list>
     </option>
   </component>

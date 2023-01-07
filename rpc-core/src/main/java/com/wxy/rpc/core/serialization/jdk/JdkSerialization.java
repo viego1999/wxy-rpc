@@ -22,7 +22,7 @@ public class JdkSerialization implements Serialization {
             oos.writeObject(object);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new SerializeException("serialize failed.", e);
+            throw new SerializeException("Jdk serialize failed.", e);
         }
     }
 
@@ -33,7 +33,7 @@ public class JdkSerialization implements Serialization {
             ObjectInputStream ois = new ObjectInputStream(bais);
             return (T) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new SerializeException("deserialize failed.", e);
+            throw new SerializeException("Jdk deserialize failed.", e);
         }
     }
 }

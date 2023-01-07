@@ -4,7 +4,7 @@ import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.RpcResponse;
 import com.wxy.rpc.core.enums.MessageType;
 import com.wxy.rpc.core.protocol.MessageHeader;
-import com.wxy.rpc.core.protocol.MessageProtocol;
+import com.wxy.rpc.core.protocol.RpcMessage;
 import com.wxy.rpc.core.serialization.Serialization;
 import com.wxy.rpc.core.serialization.SerializationFactory;
 import com.wxy.rpc.core.enums.SerializationType;
@@ -31,7 +31,6 @@ import java.util.List;
  *  -------------------------------------------------------------------
  * </pre>
  *
- * @param <T> 类型参数，具体的消息体类型
  * @author Wuxy
  * @version 1.0
  * @ClassName SharableRpcMessageCodec
@@ -41,11 +40,11 @@ import java.util.List;
  * @see io.netty.channel.ChannelOutboundHandlerAdapter
  */
 @Sharable
-public class SharableRpcMessageCodec<T> extends MessageToMessageCodec<ByteBuf, MessageProtocol<T>> {
+public class SharableRpcMessageCodec extends MessageToMessageCodec<ByteBuf, RpcMessage> {
 
     // 编码器为出站处理
     @Override
-    protected void encode(ChannelHandlerContext ctx, MessageProtocol<T> msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, RpcMessage msg, List<Object> out) throws Exception {
         ByteBuf buf = ctx.alloc().buffer();
         MessageHeader header = msg.getHeader();
         // 2字节 魔数
@@ -62,7 +61,7 @@ public class SharableRpcMessageCodec<T> extends MessageToMessageCodec<ByteBuf, M
         buf.writeByte(header.getPadding());
 
         // 取出消息体
-        T body = msg.getBody();
+        Object body = msg.getBody();
         // 获取序列化算法
         Serialization serialization = SerializationFactory
                 .getSerialization(SerializationType.parseByType(header.getSerializerType()));
@@ -117,30 +116,21 @@ public class SharableRpcMessageCodec<T> extends MessageToMessageCodec<ByteBuf, M
                 .getSerialization(SerializationType.parseByType(serializeType));
         // 获取消息枚举类型
         MessageType type = MessageType.parseByType(messageType);
-
-        switch (type) {
-            case REQUEST:
-                // 进行反序列化
-                RpcRequest request = serialization.deserialize(RpcRequest.class, bytes);
-                if (request != null) {
-                    MessageProtocol<RpcRequest> protocol = new MessageProtocol<>();
-                    protocol.setHeader(header);
-                    protocol.setBody(request);
-                    // 传递到下一个入站处理器
-                    out.add(protocol);
-                }
-                break;
-            case RESPONSE:
-                // 进行反序列化
-                RpcResponse response = serialization.deserialize(RpcResponse.class, bytes);
-                if (response != null) {
-                    MessageProtocol<RpcResponse> protocol = new MessageProtocol<>();
-                    protocol.setHeader(header);
-                    protocol.setBody(response);
-                    // 传递到下一个入站处理器
-                    out.add(protocol);
-                }
-                break;
+        RpcMessage protocol = new RpcMessage();
+        protocol.setHeader(header);
+        if (type == MessageType.REQUEST) {
+            // 进行反序列化
+            RpcRequest request = serialization.deserialize(RpcRequest.class, bytes);
+            protocol.setBody(request);
+        } else if (type == MessageType.RESPONSE) {
+            // 进行反序列化
+            RpcResponse response = serialization.deserialize(RpcResponse.class, bytes);
+            protocol.setBody(response);
+        } else if (type == MessageType.HEARTBEAT_REQUEST || type == MessageType.HEARTBEAT_RESPONSE) {
+            String message = serialization.deserialize(String.class, bytes);
+            protocol.setBody(message);
         }
+        // 传递到下一个处理器
+        out.add(protocol);
     }
 }

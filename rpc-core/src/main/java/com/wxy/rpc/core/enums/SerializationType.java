@@ -20,7 +20,12 @@ public enum SerializationType {
     /**
      * HESSIAN 序列化算法
      */
-    HESSIAN((byte) 2);
+    HESSIAN((byte) 2),
+
+    /**
+     * KRYO 序列化算法
+     */
+    KRYO((byte) 3);
 
     /**
      * 类型

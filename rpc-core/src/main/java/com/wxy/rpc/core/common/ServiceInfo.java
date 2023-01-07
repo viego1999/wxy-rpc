@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 服务注册信息实体类，用于封装远程服务提供方信息
  *
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceInfo {
+public class ServiceInfo implements Serializable {
 
     /**
      * 应用名称

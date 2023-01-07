@@ -12,13 +12,6 @@
   <modules>
     <module>provider</module>
     <module>consumer</module>
-    <module>rpc-client-spring-boot-starter</module>
-    <module>rpc-server-spring-boot-starter</module>
-    <module>rpc-core</module>
-    <module>rpc-server-spring-boot-autoconfigure</module>
-    <module>rpc-server</module>
-    <module>rpc-client</module>
-    <module>rpc-client-spring-boot-autoconfigure</module>
     <module>provider-api</module>
   </modules>
 

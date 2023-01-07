@@ -13,7 +13,7 @@ public class RpcRequest implements Serializable {
     /**
      * 服务名称：请求的服务名 + 版本
      */
-    private String serverName;
+    private String serviceName;
 
     /**
      * 请求调用的方法名称
