@@ -37,7 +37,7 @@ public class RpcServerProperties {
     private String transport;
 
     /**
-     * The address of the registry is 192.168.247.130:2181 by default
+     * The address of the registry is 127.0.0.1:2181 by default
      */
     private String registryAddr;
 
@@ -49,6 +49,6 @@ public class RpcServerProperties {
         this.appName = "provider-1";
         this.registry = "zookeeper";
         this.transport = "netty";
-        this.registryAddr = "192.168.247.130:2181";
+        this.registryAddr = "127.0.0.1:2181";
     }
 }

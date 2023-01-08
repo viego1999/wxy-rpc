@@ -36,7 +36,7 @@ public class RpcClientProperties {
     private String registry;
 
     /**
-     * Service discovery (registry) address. The default is "192.168.247.130:2181"
+     * Service discovery (registry) address. The default is "127.0.0.1:2181"
      */
     private String registryAddr;
 
@@ -50,7 +50,7 @@ public class RpcClientProperties {
         this.serialization = "HESSIAN";
         this.transport = "netty";
         this.registry = "zookeeper";
-        this.registryAddr = "192.168.247.130:2181";
+        this.registryAddr = "127.0.0.1:2181";
         this.timeout = 5000;
     }
 }
