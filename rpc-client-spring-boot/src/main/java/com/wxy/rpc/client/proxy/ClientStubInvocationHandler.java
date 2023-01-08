@@ -27,12 +27,15 @@ public class ClientStubInvocationHandler implements InvocationHandler {
 
     private final ServiceDiscovery serviceDiscovery;
 
+    private final RpcClient rpcClient;
+
     private final RpcClientProperties properties;
 
     private final String serviceName;
 
-    public ClientStubInvocationHandler(ServiceDiscovery serviceDiscovery, RpcClientProperties properties, String serviceName) {
+    public ClientStubInvocationHandler(ServiceDiscovery serviceDiscovery, RpcClient rpcClient, RpcClientProperties properties, String serviceName) {
         this.serviceDiscovery = serviceDiscovery;
+        this.rpcClient = rpcClient;
         this.properties = properties;
         this.serviceName = serviceName;
     }
@@ -61,12 +64,15 @@ public class ClientStubInvocationHandler implements InvocationHandler {
         // 构建请求元数据
         RequestMetadata metadata = RequestMetadata.builder()
                 .rpcMessage(protocol)
-                .serverAddr(serviceInfo.getServiceName())
+                .serverAddr(serviceInfo.getAddress())
                 .port(serviceInfo.getPort())
                 .timeout(properties.getTimeout()).build();
 
-        // 获得 RpcClient 实现类
-        RpcClient rpcClient = RpcClientFactory.getRpcClient(properties.getTransport());
+        // todo: 是否每次 invoke 方法一次都创建一个新的 RpcClient ？？？？
+
+        //  获得 RpcClient 实现类
+//        RpcClient rpcClient = RpcClientFactory.getRpcClient(properties.getTransport());
+
         // 发送网络请求，获取结果
         RpcMessage responseRpcMessage = rpcClient.sendRpcRequest(metadata);
 

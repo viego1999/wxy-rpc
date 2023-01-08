@@ -23,7 +23,7 @@ import java.net.InetAddress;
  * </p>
  */
 @Slf4j
-public class RpcServerBeanProcessor implements BeanPostProcessor, CommandLineRunner {
+public class RpcServerBeanPostProcessor implements BeanPostProcessor, CommandLineRunner {
 
     private final ServiceRegistry serviceRegistry;
 
@@ -31,7 +31,7 @@ public class RpcServerBeanProcessor implements BeanPostProcessor, CommandLineRun
 
     private final RpcServerProperties properties;
 
-    public RpcServerBeanProcessor(ServiceRegistry serviceRegistry, RpcServer rpcServer, RpcServerProperties properties) {
+    public RpcServerBeanPostProcessor(ServiceRegistry serviceRegistry, RpcServer rpcServer, RpcServerProperties properties) {
         this.serviceRegistry = serviceRegistry;
         this.rpcServer = rpcServer;
         this.properties = properties;

@@ -8,7 +8,9 @@
         <relativePath/>
     </parent>
 
+    <groupId>com.wxy.rpc</groupId>
     <artifactId>rpc-server-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>rpc-server-spring-boot-starter</name>
@@ -24,10 +26,14 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
+            <groupId>com.wxy.rpc</groupId>
+            <artifactId>rpc-server-spring-boot</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wxy.rpc</groupId>
+            <artifactId>rpc-core</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

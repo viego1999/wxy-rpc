@@ -27,14 +27,22 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- 写改为可选依赖，由 starter 进行引入，增加扩展性 -->
         <dependency>
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-core</artifactId>
+            <optional>true</optional>
             <version>1.0.0</version>
         </dependency>
+        <!-- 一些可选的，但强烈建议使用的注解解析器 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure-processor</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>

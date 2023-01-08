@@ -10,19 +10,31 @@
     {
       "name": "rpc.server.app-name",
       "type": "java.lang.String",
-      "description": "服务名称",
+      "description": "Application name, which defaults to provider-1",
       "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
     },
     {
       "name": "rpc.server.port",
       "type": "java.lang.Integer",
-      "description": "服务启动端口",
+      "description": "The service startup port is 8080 by default",
+      "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
+    },
+    {
+      "name": "rpc.server.registry",
+      "type": "java.lang.String",
+      "description": "Registration center, such as zookeeper and nacos, defaults to zookeeper",
       "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
     },
     {
       "name": "rpc.server.registry-addr",
       "type": "java.lang.String",
-      "description": "注册中心地址",
+      "description": "The address of the registry is 192.168.247.130:2181 by default",
+      "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
+    },
+    {
+      "name": "rpc.server.transport",
+      "type": "java.lang.String",
+      "description": "Transmission protocols, such as netty and http, are netty by default",
       "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
     }
   ],

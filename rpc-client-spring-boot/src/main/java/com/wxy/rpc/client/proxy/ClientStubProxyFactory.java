@@ -1,6 +1,7 @@
 package com.wxy.rpc.client.proxy;
 
 import com.wxy.rpc.client.config.RpcClientProperties;
+import com.wxy.rpc.client.transport.RpcClient;
 import com.wxy.rpc.core.discovery.ServiceDiscovery;
 import com.wxy.rpc.core.util.ServiceUtil;
 
@@ -24,12 +25,18 @@ public class ClientStubProxyFactory {
     private final ServiceDiscovery discovery;
 
     /**
+     * RpcClient 传输实现类
+     */
+    private final RpcClient rpcClient;
+
+    /**
      * 客户端配置属性
      */
     private final RpcClientProperties properties;
 
-    public ClientStubProxyFactory(ServiceDiscovery discovery, RpcClientProperties properties) {
+    public ClientStubProxyFactory(ServiceDiscovery discovery, RpcClient rpcClient, RpcClientProperties properties) {
         this.discovery = discovery;
+        this.rpcClient = rpcClient;
         this.properties = properties;
     }
 
@@ -47,12 +54,12 @@ public class ClientStubProxyFactory {
      * @return 对应版本的代理对象
      */
     @SuppressWarnings("unchecked")
-    private <T> T getProxy(Class<T> clazz, String version) {
+    public <T> T getProxy(Class<T> clazz, String version) {
         return (T) proxyMap.computeIfAbsent(ServiceUtil.serviceKey(clazz.getName(), version),
                 serviceName -> Proxy.newProxyInstance(
                         clazz.getClassLoader(),
-                        clazz.getInterfaces(),
-                        new ClientStubInvocationHandler(discovery, properties, serviceName)));
+                        new Class[]{clazz}, // 注意，这里的接口是 clazz 本身（即，要代理的实现类所实现的接口）
+                        new ClientStubInvocationHandler(discovery, rpcClient, properties, serviceName)));
     }
 
 }
