@@ -28,7 +28,7 @@
     {
       "name": "rpc.server.registry-addr",
       "type": "java.lang.String",
-      "description": "The address of the registry is 192.168.247.130:2181 by default",
+      "description": "The address of the registry is 127.0.0.1:2181 by default",
       "sourceType": "com.wxy.rpc.server.config.RpcServerProperties"
     },
     {

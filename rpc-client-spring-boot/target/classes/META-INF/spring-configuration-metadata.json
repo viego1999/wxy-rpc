@@ -22,7 +22,7 @@
     {
       "name": "rpc.client.registry-addr",
       "type": "java.lang.String",
-      "description": "Service discovery (registry) address. The default is \"192.168.247.130:2181\"",
+      "description": "Service discovery (registry) address. The default is \"127.0.0.1:2181\"",
       "sourceType": "com.wxy.rpc.client.config.RpcClientProperties"
     },
     {

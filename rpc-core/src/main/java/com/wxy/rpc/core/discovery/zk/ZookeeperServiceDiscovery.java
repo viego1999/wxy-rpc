@@ -51,9 +51,16 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
     private org.apache.curator.x.discovery.ServiceDiscovery<ServiceInfo> serviceDiscovery;
 
     /**
+     * ServiceCache: 将在zk中的服务数据缓存至本地，并监听服务变化，实时更新缓存
+     * <p>
      * 服务本地缓存，将服务缓存到本地并增加 watch 事件，当远程服务发生改变时自动更新服务缓存
      */
     private final Map<String, ServiceCache<ServiceInfo>> serviceCacheMap = new ConcurrentHashMap<>();
+
+    /**
+     * 用来将服务列表缓存到本地内存，当服务发生变化时，由 serviceCache 进行服务列表更新操作，当 zk 挂掉时，将保存当前服务列表以便继续提供服务
+     */
+    private final Map<String, List<ServiceInfo>> serviceMap = new ConcurrentHashMap<>();
 
 
     /**
@@ -97,7 +104,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
 
     @Override
     public List<ServiceInfo> getServices(String serviceName) throws Exception {
-        if (!serviceCacheMap.containsKey(serviceName)) {
+        if (!serviceMap.containsKey(serviceName)) {
             // 构建本地服务缓存
             ServiceCache<ServiceInfo> serviceCache = serviceDiscovery.serviceCacheBuilder()
                     .name(serviceName)
@@ -108,22 +115,30 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
                 public void cacheChanged() {
                     log.info("The service [{}] cache has changed. The current number of service samples is {}."
                             , serviceName, serviceCache.getInstances().size());
+                    // 更新本地缓存的服务列表
+                    serviceMap.put(serviceName, serviceCache.getInstances().stream()
+                            .map(ServiceInstance::getPayload)
+                            .collect(Collectors.toList()));
                 }
 
                 @Override
                 public void stateChanged(CuratorFramework client, ConnectionState newState) {
+                    // 当连接状态发生改变时，只打印提示信息，保留本地缓存的服务列表
                     log.info("The client {} connection status has changed. The current status is: {}."
                             , client, newState);
                 }
             });
             // 开启服务缓存监听
             serviceCache.start();
+            // 将服务缓存对象存入本地
             serviceCacheMap.put(serviceName, serviceCache);
+            // 将服务列表缓存到本地
+            serviceMap.put(serviceName, serviceCacheMap.get(serviceName).getInstances()
+                    .stream()
+                    .map(ServiceInstance::getPayload)
+                    .collect(Collectors.toList()));
         }
-        return serviceCacheMap.get(serviceName).getInstances()
-                .stream()
-                .map(ServiceInstance::getPayload)
-                .collect(Collectors.toList());
+        return serviceMap.get(serviceName);
     }
 
     @Override
