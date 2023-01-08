@@ -25,12 +25,12 @@
         <dependency>
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-client-spring-boot-starter</artifactId>
-            <version>1.0.0</version>
+            <version>${rpc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wxy.rpc</groupId>
             <artifactId>provider-api</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- 引入 configuration-processor -->
         <dependency>

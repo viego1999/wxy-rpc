@@ -13,18 +13,23 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>rpc-server</name>
+    <name>rpc-server-spring-boot</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <encoding>UTF-8</encoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <junit.version>3.8.1</junit.version>
+        <rpc.version>1.0.0</rpc.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- 写改为可选依赖，由 starter 进行引入，增加扩展性 -->
@@ -32,7 +37,7 @@
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-core</artifactId>
             <optional>true</optional>
-            <version>1.0.0</version>
+            <version>${rpc.version}</version>
         </dependency>
         <!-- 一些可选的，但强烈建议使用的注解解析器 -->
         <dependency>

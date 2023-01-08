@@ -18,6 +18,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <encoding>UTF-8</encoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <rpc.version>1.0.0</rpc.version>
     </properties>
 
     <dependencies>
@@ -28,12 +32,12 @@
         <dependency>
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-server-spring-boot</artifactId>
-            <version>1.0.0</version>
+            <version>${rpc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-core</artifactId>
-            <version>1.0.0</version>
+            <version>${rpc.version}</version>
         </dependency>
     </dependencies>
 </project>

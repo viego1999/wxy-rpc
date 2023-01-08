@@ -18,18 +18,19 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <rpc.version>1.0.0</rpc.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-client-spring-boot</artifactId>
-            <version>1.0.0</version>
+            <version>${rpc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-core</artifactId>
-            <version>1.0.0</version>
+            <version>${rpc.version}</version>
         </dependency>
     </dependencies>
 </project>
