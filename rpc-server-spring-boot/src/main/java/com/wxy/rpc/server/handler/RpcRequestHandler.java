@@ -3,6 +3,7 @@ package com.wxy.rpc.server.handler;
 import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.RpcResponse;
 import com.wxy.rpc.core.constant.ProtocolConstants;
+import com.wxy.rpc.core.enums.MessageStatus;
 import com.wxy.rpc.core.enums.MessageType;
 import com.wxy.rpc.core.exception.RpcException;
 import com.wxy.rpc.core.protocol.MessageHeader;
@@ -46,6 +47,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcMessage> {
                 // 如果是心跳检测请求信息
                 if (type == MessageType.HEARTBEAT_REQUEST) {
                     header.setMessageType(MessageType.HEARTBEAT_RESPONSE.getType());
+                    header.setMessageStatus(MessageStatus.SUCCESS.getCode());
                     // 设置响应头部信息
                     responseRpcMessage.setHeader(header);
                     responseRpcMessage.setBody(ProtocolConstants.PONG);
@@ -65,10 +67,12 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcMessage> {
                         Method method = service.getClass().getMethod(request.getMethod(), request.getParameterTypes());
                         Object result = method.invoke(service, request.getParameterValues());
                         response.setReturnValue(result);
+                        header.setMessageStatus(MessageStatus.SUCCESS.getCode());
                     } catch (Exception e) {
                         log.error("The service [{}], the method [{}] invoke failed!", request.getServiceName(), request.getMethod());
                         // 若不设置，堆栈信息过多，导致报错
                         response.setExceptionValue(new RpcException("Error in remote procedure call, " + e.getMessage()));
+                        header.setMessageStatus(MessageStatus.FAIL.getCode());
                     }
                     // 设置响应头部信息
                     responseRpcMessage.setHeader(header);

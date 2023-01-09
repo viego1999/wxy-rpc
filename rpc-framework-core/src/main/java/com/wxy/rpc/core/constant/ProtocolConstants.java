@@ -14,9 +14,12 @@ public class ProtocolConstants {
 
     private static final AtomicInteger ai = new AtomicInteger();
 
-    public static final short MAGIC_NUM = 0x00;
+    /**
+     * 魔数，用来第一时间判断是否无效数据包
+     */
+    public static final byte[] MAGIC_NUM = new byte[]{(byte) 'w', (byte) 'r', (byte) 'p', (byte) 'c'};
 
-    public static final byte VERSION = 0x01;
+    public static final byte VERSION = 1;
 
     public static final String PING = "ping";
 

@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 /**
  * 请求协议头部信息
  * <pre>
- *   ------------------------------------------------------------------
- *  | 魔数 (2byte) | 版本号 (1byte) | 序列化算法 (1byte) | 消息类型 (1byte) |
+ *   --------------------------------------------------------------------
+ *  | 魔数 (4byte) | 版本号 (1byte)  | 序列化算法 (1byte)  | 消息类型 (1byte) |
  *  -------------------------------------------------------------------
- *  |   消息序列号 (4byte)   |   对齐填充符 (1byte)   |   消息长度 (4byte)  |
- *  -------------------------------------------------------------------
+ *  |  状态类型 (1byte)  |     消息序列号 (4byte)   |     消息长度 (4byte)    |
+ *  --------------------------------------------------------------------
  * </pre>
  *
  * @author Wuxy
@@ -29,9 +29,9 @@ import lombok.NoArgsConstructor;
 public class MessageHeader {
 
     /**
-     * 2字节 魔数
+     * 4字节 魔数
      */
-    private short magicNum;
+    private byte[] magicNum;
 
     /**
      * 1字节 版本号
@@ -49,14 +49,14 @@ public class MessageHeader {
     private byte messageType;
 
     /**
+     * 消息状态类型
+     */
+    private byte messageStatus;
+
+    /**
      * 4字节 消息的序列号 ID
      */
     private int sequenceId;
-
-    /**
-     * 1字节 对齐填充符号，无意义
-     */
-    private byte padding;
 
     /**
      * 4字节 数据内容长度

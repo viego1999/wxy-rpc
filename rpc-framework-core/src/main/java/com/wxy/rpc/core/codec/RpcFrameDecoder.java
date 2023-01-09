@@ -17,12 +17,12 @@ public class RpcFrameDecoder extends LengthFieldBasedFrameDecoder {
     /**
      * 得到当前约定协议的帧解码器，
      * <pre>{@code
-     *    this.RpcFrameDecoder(1024, 10, 4)
+     *    this.RpcFrameDecoder(1024, 12, 4)
      * }</pre>
      * 引用：{@link RpcFrameDecoder#RpcFrameDecoder(int, int, int)}
      */
     public RpcFrameDecoder() {
-        this(1024, 10, 4);
+        this(1024, 12, 4);
     }
 
     /**

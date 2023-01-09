@@ -2,7 +2,9 @@ package com.wxy.rpc.core.codec;
 
 import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.RpcResponse;
+import com.wxy.rpc.core.constant.ProtocolConstants;
 import com.wxy.rpc.core.enums.MessageType;
+import com.wxy.rpc.core.exception.RpcException;
 import com.wxy.rpc.core.protocol.MessageHeader;
 import com.wxy.rpc.core.protocol.RpcMessage;
 import com.wxy.rpc.core.serialization.Serialization;
@@ -13,6 +15,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,12 +25,12 @@ import java.util.List;
  * <p>
  * 消息协议：
  * <pre>
- *   ------------------------------------------------------------------
- *  | 魔数 (2byte) | 版本号 (1byte) | 序列化算法 (1byte) | 消息类型 (1byte) |
+ *   --------------------------------------------------------------------
+ *  | 魔数 (4byte) | 版本号 (1byte)  | 序列化算法 (1byte) | 消息类型 (1byte) |
  *  -------------------------------------------------------------------
- *  |   消息序列号 (4byte)   |   对齐填充符 (1byte)   |   消息长度 (4byte)  |
- *  -------------------------------------------------------------------
- *  |                        消息内容 (不固定长度)                        |
+ *  |    状态类型 (1byte)  |    消息序列号 (4byte)   |    消息长度 (4byte)   |
+ *  --------------------------------------------------------------------
+ *  |                        消息内容 (不固定长度)                         |
  *  -------------------------------------------------------------------
  * </pre>
  *
@@ -47,18 +50,18 @@ public class SharableRpcMessageCodec extends MessageToMessageCodec<ByteBuf, RpcM
     protected void encode(ChannelHandlerContext ctx, RpcMessage msg, List<Object> out) throws Exception {
         ByteBuf buf = ctx.alloc().buffer();
         MessageHeader header = msg.getHeader();
-        // 2字节 魔数
-        buf.writeShort(header.getMagicNum());
+        // 4字节 魔数
+        buf.writeBytes(header.getMagicNum());
         // 1字节 版本号
         buf.writeByte(header.getVersion());
         // 1字节 序列化算法
         buf.writeByte(header.getSerializerType());
         // 1字节 消息类型
         buf.writeByte(header.getMessageType());
+        // 1字节 消息状态
+        buf.writeByte(header.getMessageStatus());
         // 4字节 消息序列号
         buf.writeInt(header.getSequenceId());
-        // 1字节 填充符号
-        buf.writeByte(header.getPadding());
 
         // 取出消息体
         Object body = msg.getBody();
@@ -83,18 +86,32 @@ public class SharableRpcMessageCodec extends MessageToMessageCodec<ByteBuf, RpcM
     // 解码器为入站处理，将 ByteBuf 对象解码成 RpcMessage 对象
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        // 2字节 魔数
-        short magicNum = msg.readShort();
+        // 4字节 魔数
+        int len = ProtocolConstants.MAGIC_NUM.length;
+        byte[] magicNum = new byte[len];
+        msg.readBytes(magicNum, 0, len);
+        // 判断魔数是否正确，不正确表示非协议请求，不进行处理
+        for (int i = 0; i < len; i++) {
+            if (magicNum[i] != ProtocolConstants.MAGIC_NUM[i]) {
+                throw new IllegalArgumentException("Unknown magic code: " + Arrays.toString(magicNum));
+            }
+        }
+
         // 1字节 版本号
         byte version = msg.readByte();
+        // 检查版本号是否一致
+        if (version != ProtocolConstants.VERSION) {
+            throw new IllegalArgumentException("The version isn't compatible " + version);
+        }
+
         // 1字节 序列化算法
         byte serializeType = msg.readByte();
         // 1字节 消息类型
         byte messageType = msg.readByte();
+        // 1字节 消息状态
+        byte messageStatus = msg.readByte();
         // 4字节 消息序列号
         int sequenceId = msg.readInt();
-        // 1字节 填充符号
-        byte padding = msg.readByte();
         // 4字节 长度
         int length = msg.readInt();
 
@@ -108,7 +125,7 @@ public class SharableRpcMessageCodec extends MessageToMessageCodec<ByteBuf, RpcM
                 .serializerType(serializeType)
                 .messageType(messageType)
                 .sequenceId(sequenceId)
-                .padding(padding)
+                .messageStatus(messageStatus)
                 .length(length).build();
 
         // 获取反序列化算法
