@@ -19,7 +19,7 @@
         <module>consumer</module>
         <module>provider</module>
         <module>provider-api</module>
-        <module>rpc-core</module>
+        <module>rpc-framework-core</module>
         <module>rpc-client-spring-boot</module>
         <module>rpc-client-spring-boot-starter</module>
         <module>rpc-server-spring-boot</module>

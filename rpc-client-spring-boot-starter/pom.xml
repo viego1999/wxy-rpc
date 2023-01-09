@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>com.wxy.rpc</groupId>
-            <artifactId>rpc-core</artifactId>
+            <artifactId>rpc-framework-core</artifactId>
             <version>${rpc.version}</version>
         </dependency>
     </dependencies>

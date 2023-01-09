@@ -33,7 +33,7 @@
         <!-- 设置为可选依赖，由 starter 进行引入，增加可扩展性 -->
         <dependency>
             <groupId>com.wxy.rpc</groupId>
-            <artifactId>rpc-core</artifactId>
+            <artifactId>rpc-framework-core</artifactId>
             <version>${rpc.version}</version>
             <optional>true</optional>
             <scope>compile</scope>

@@ -8,10 +8,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>rpc-core</artifactId>
+    <artifactId>rpc-framework-core</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>rpc-core</name>
+    <name>rpc-framework-core</name>
     <url>http://maven.apache.org</url>
 
     <properties>

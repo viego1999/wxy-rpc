@@ -78,7 +78,7 @@ public class RpcServerBeanPostProcessor implements BeanPostProcessor, CommandLin
     }
 
     /**
-     * 开机自启动
+     * 开机自启动 - 此方法实现于 {@link CommandLineRunner} 接口，基于 springboot
      *
      * @param args incoming main method arguments 命令行参数
      * @throws Exception 启动异常

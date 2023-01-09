@@ -42,7 +42,7 @@ import java.util.List;
 @Sharable
 public class SharableRpcMessageCodec extends MessageToMessageCodec<ByteBuf, RpcMessage> {
 
-    // 编码器为出站处理
+    // 编码器为出站处理，将 RpcMessage 编码为 ByteBuf 对象
     @Override
     protected void encode(ChannelHandlerContext ctx, RpcMessage msg, List<Object> out) throws Exception {
         ByteBuf buf = ctx.alloc().buffer();
@@ -80,7 +80,7 @@ public class SharableRpcMessageCodec extends MessageToMessageCodec<ByteBuf, RpcM
         out.add(buf);
     }
 
-    // 解码器为入站处理
+    // 解码器为入站处理，将 ByteBuf 对象解码成 RpcMessage 对象
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         // 2字节 魔数

@@ -12,9 +12,9 @@
         <module name="rpc-server-spring-boot" />
         <module name="rpc-server-spring-boot-starter" />
         <module name="rpc-client-spring-boot-starter" />
+        <module name="rpc-framework-core" />
         <module name="provider-api" />
         <module name="consumer" />
-        <module name="rpc-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
