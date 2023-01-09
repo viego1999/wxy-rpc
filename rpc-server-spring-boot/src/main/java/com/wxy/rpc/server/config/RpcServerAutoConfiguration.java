@@ -1,6 +1,6 @@
 package com.wxy.rpc.server.config;
 
-import com.wxy.rpc.RpcServerBeanPostProcessor;
+import com.wxy.rpc.server.spring.RpcServerBeanPostProcessor;
 import com.wxy.rpc.core.registry.ServiceRegistry;
 import com.wxy.rpc.core.registry.nacos.NacosServiceRegistry;
 import com.wxy.rpc.core.registry.zk.ZookeeperServiceRegistry;

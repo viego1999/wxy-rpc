@@ -1,6 +1,6 @@
 package com.wxy.rpc.client.config;
 
-import com.wxy.rpc.RpcClientBeanPostProcessor;
+import com.wxy.rpc.client.spring.RpcClientBeanPostProcessor;
 import com.wxy.rpc.client.proxy.ClientStubProxyFactory;
 import com.wxy.rpc.client.transport.RpcClient;
 import com.wxy.rpc.client.transport.http.HttpRpcClient;

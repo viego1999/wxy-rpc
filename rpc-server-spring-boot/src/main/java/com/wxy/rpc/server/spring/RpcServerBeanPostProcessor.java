@@ -1,4 +1,4 @@
-package com.wxy.rpc;
+package com.wxy.rpc.server.spring;
 
 import com.wxy.rpc.core.common.ServiceInfo;
 import com.wxy.rpc.core.registry.ServiceRegistry;

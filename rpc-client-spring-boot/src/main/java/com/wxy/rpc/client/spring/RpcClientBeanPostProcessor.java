@@ -1,4 +1,4 @@
-package com.wxy.rpc;
+package com.wxy.rpc.client.spring;
 
 import com.wxy.rpc.client.annotation.RpcReference;
 import com.wxy.rpc.client.proxy.ClientStubProxyFactory;

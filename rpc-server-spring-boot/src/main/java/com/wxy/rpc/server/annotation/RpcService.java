@@ -1,7 +1,5 @@
 package com.wxy.rpc.server.annotation;
 
-import org.springframework.stereotype.Service;
-
 import java.lang.annotation.*;
 
 /**
@@ -11,13 +9,11 @@ import java.lang.annotation.*;
  * @version 1.0
  * @ClassName RpcService
  * @Date 2023/1/6 17:15
- * @see Service
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Service
 public @interface RpcService {
 
     /**
