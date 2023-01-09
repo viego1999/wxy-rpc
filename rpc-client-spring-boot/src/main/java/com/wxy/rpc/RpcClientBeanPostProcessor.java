@@ -1,16 +1,10 @@
 package com.wxy.rpc;
 
-import com.wxy.rpc.client.annotaition.RpcReference;
+import com.wxy.rpc.client.annotation.RpcReference;
 import com.wxy.rpc.client.proxy.ClientStubProxyFactory;
 import com.wxy.rpc.core.exception.RpcException;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Field;
 
@@ -19,7 +13,7 @@ import java.lang.reflect.Field;
  *
  * @author Wuxy
  * @version 1.0
- * @see com.wxy.rpc.client.annotaition.RpcReference
+ * @see com.wxy.rpc.client.annotation.RpcReference
  */
 public class RpcClientBeanPostProcessor implements BeanPostProcessor {
 

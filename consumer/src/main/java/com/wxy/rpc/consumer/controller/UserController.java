@@ -2,7 +2,7 @@ package com.wxy.rpc.consumer.controller;
 
 import com.wxy.rpc.api.pojo.User;
 import com.wxy.rpc.api.service.UserService;
-import com.wxy.rpc.client.annotaition.RpcReference;
+import com.wxy.rpc.client.annotation.RpcReference;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

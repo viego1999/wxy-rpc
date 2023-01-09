@@ -1,4 +1,4 @@
-package com.wxy.rpc.client.annotaition;
+package com.wxy.rpc.client.annotation;
 
 import java.lang.annotation.*;
 
