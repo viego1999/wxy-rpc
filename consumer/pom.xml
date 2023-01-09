@@ -5,6 +5,7 @@
         <groupId>com.wxy.rpc</groupId>
         <artifactId>wxy-rpc</artifactId>
         <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>consumer</artifactId>
@@ -42,4 +43,13 @@
             <artifactId>spring-boot-autoconfigure-processor</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
