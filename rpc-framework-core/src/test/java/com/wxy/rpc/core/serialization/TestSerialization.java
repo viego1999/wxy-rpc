@@ -40,12 +40,12 @@ public class TestSerialization {
 //        embeddedChannel.writeOutbound(protocol); // encode
 
         ByteBuf buf = embeddedChannel.alloc().buffer();
-        buf.writeShort(header.getMagicNum());
+        buf.writeBytes(header.getMagicNum());
         buf.writeByte(header.getVersion());
         buf.writeByte(header.getSerializerType());
         buf.writeByte(header.getMessageType());
+        buf.writeByte(header.getMessageStatus());
         buf.writeInt(header.getSequenceId());
-        buf.writeByte(header.getPadding());
         Serialization serialization = SerializationFactory
                 .getSerialization(SerializationType.parseByType(header.getSerializerType()));
         byte[] bytes = serialization.serialize(request);

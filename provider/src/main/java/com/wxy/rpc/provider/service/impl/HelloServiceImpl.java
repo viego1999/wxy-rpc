@@ -1,4 +1,4 @@
-package com.wxy.rpc.provider.service;
+package com.wxy.rpc.provider.service.impl;
 
 import com.wxy.rpc.api.service.HelloService;
 import com.wxy.rpc.server.annotation.RpcService;
