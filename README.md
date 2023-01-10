@@ -11,7 +11,7 @@
 
 一个最基本的RPC框架如下图所示：
 
-<img src="D:\IdeaProjects\wxy-rpc\images\简单RPC架构图.png" alt="简单RPC架构图" style="zoom: 45%;" />
+<img src="images\简单RPC架构图.png" alt="简单RPC架构图" style="zoom: 45%;" />
 
 RPC框架一般必须包含三个组件，分别是**客户端、服务端**以及**注册中心**，一次完整的 RPC 调用流程一般为：
 
@@ -25,7 +25,7 @@ RPC框架一般必须包含三个组件，分别是**客户端、服务端**以�
 
 ### 项目结构介绍
 
-<img src="D:\IdeaProjects\wxy-rpc\images\项目架构图.png" alt="项目架构图" style="zoom:67%;" />
+<img src="images\项目架构图.png" alt="项目架构图" style="zoom:67%;" />
 
 consumer模块：服务的消费者，依赖于 rpc-client-spring-boot-starter 模块；
 
