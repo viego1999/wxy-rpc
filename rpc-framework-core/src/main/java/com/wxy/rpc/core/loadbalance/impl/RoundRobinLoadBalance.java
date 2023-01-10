@@ -1,6 +1,9 @@
-package com.wxy.rpc.core.loadbalance;
+package com.wxy.rpc.core.loadbalance.impl;
 
+import com.wxy.rpc.core.common.RpcRequest;
+import com.wxy.rpc.core.common.ServiceInfo;
 import com.wxy.rpc.core.exception.LoadBalanceException;
+import com.wxy.rpc.core.loadbalance.LoadBalance;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,10 +21,10 @@ public class RoundRobinLoadBalance implements LoadBalance {
     private static final AtomicInteger current = new AtomicInteger(0);
 
     @Override
-    public <T> T chooseOne(List<T> objects) {
-        if (objects == null || objects.isEmpty()) {
+    public ServiceInfo select(List<ServiceInfo> invokers, RpcRequest request) {
+        if (invokers == null || invokers.isEmpty()) {
             throw new LoadBalanceException("The service list is empty.");
         }
-        return objects.get(current.getAndIncrement() % objects.size());
+        return invokers.get(current.getAndIncrement() % invokers.size());
     }
 }

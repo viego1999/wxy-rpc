@@ -16,12 +16,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class RpcClientProperties {
 
     /**
-     * Load balancing algorithm. The default is random
+     * Load balancing algorithm, candidate values include: (random, roundRobin, consistentHash), the default is random.
      */
     private String loadbalance;
 
     /**
-     * Serialization algorithm, default: HESSIAN
+     * Serialization algorithm, candidate values include: (JDK, JSON, HESSIAN, KRYO, PROTOSTUFF), default: HESSIAN
      */
     private String serialization;
 

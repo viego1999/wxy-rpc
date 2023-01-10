@@ -1,5 +1,6 @@
 package com.wxy.rpc.core.discovery.nacos;
 
+import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.ServiceInfo;
 import com.wxy.rpc.core.discovery.ServiceDiscovery;
 import com.wxy.rpc.core.loadbalance.LoadBalance;
@@ -24,7 +25,7 @@ public class NacosServiceDiscovery implements ServiceDiscovery {
     }
 
     @Override
-    public ServiceInfo discover(String serviceName) {
+    public ServiceInfo discover(RpcRequest request) {
         return null;
     }
 

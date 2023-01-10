@@ -42,12 +42,6 @@ public class ClientStubInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // 1. 进行服务发现
-        ServiceInfo serviceInfo = serviceDiscovery.discover(serviceName);
-        if (serviceInfo == null) {
-            throw new RpcException(String.format("The service [%s] was not found in the remote registry center.",
-                    serviceName));
-        }
         // 构建请求头
         MessageHeader header = MessageHeader.build(properties.getSerialization());
         // 构建请求体
@@ -56,14 +50,22 @@ public class ClientStubInvocationHandler implements InvocationHandler {
         request.setMethod(method.getName());
         request.setParameterTypes(method.getParameterTypes());
         request.setParameterValues(args);
-        // 构建 通信协议
-        RpcMessage protocol = new RpcMessage();
-        protocol.setHeader(header);
-        protocol.setBody(request);
+
+        // 进行服务发现
+        ServiceInfo serviceInfo = serviceDiscovery.discover(request);
+        if (serviceInfo == null) {
+            throw new RpcException(String.format("The service [%s] was not found in the remote registry center.",
+                    serviceName));
+        }
+
+        // 构建通信协议信息
+        RpcMessage rpcMessage = new RpcMessage();
+        rpcMessage.setHeader(header);
+        rpcMessage.setBody(request);
 
         // 构建请求元数据
         RequestMetadata metadata = RequestMetadata.builder()
-                .rpcMessage(protocol)
+                .rpcMessage(rpcMessage)
                 .serverAddr(serviceInfo.getAddress())
                 .port(serviceInfo.getPort())
                 .timeout(properties.getTimeout()).build();

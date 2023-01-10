@@ -1,5 +1,6 @@
 package com.wxy.rpc.core.discovery.zk;
 
+import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.ServiceInfo;
 import com.wxy.rpc.core.discovery.ServiceDiscovery;
 import com.wxy.rpc.core.exception.RpcException;
@@ -93,12 +94,13 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
     }
 
     @Override
-    public ServiceInfo discover(String serviceName) {
+    public ServiceInfo discover(RpcRequest request) {
 
         try {
-            return loadBalance.chooseOne(getServices(serviceName));
+            return loadBalance.select(getServices(request.getServiceName()), request);
         } catch (Exception e) {
-            throw new RpcException(String.format("Remote service discovery did not find service %s.", serviceName), e);
+            throw new RpcException(String.format("Remote service discovery did not find service %s.",
+                    request.getServiceName()), e);
         }
     }
 

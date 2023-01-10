@@ -1,5 +1,6 @@
 package com.wxy.rpc.core.discovery;
 
+import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.ServiceInfo;
 
 import java.io.IOException;
@@ -19,10 +20,10 @@ public interface ServiceDiscovery {
     /**
      * 进行服务发现
      *
-     * @param serviceName 服务名
+     * @param request Rpc请求，封装了请求的服务名
      * @return 返回服务提供方信息
      */
-    ServiceInfo discover(String serviceName);
+    ServiceInfo discover(RpcRequest request);
 
     /**
      * 返回服务的所有提供方，若未实现，默认返回空的 ArrayList

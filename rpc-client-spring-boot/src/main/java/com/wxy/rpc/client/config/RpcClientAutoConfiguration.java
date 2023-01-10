@@ -9,10 +9,10 @@ import com.wxy.rpc.client.transport.netty.NettyRpcClient;
 import com.wxy.rpc.core.discovery.ServiceDiscovery;
 import com.wxy.rpc.core.discovery.nacos.NacosServiceDiscovery;
 import com.wxy.rpc.core.discovery.zk.ZookeeperServiceDiscovery;
-import com.wxy.rpc.core.loadbalance.ConsistentHashLoadBalance;
+import com.wxy.rpc.core.loadbalance.impl.ConsistentHashLoadBalance;
 import com.wxy.rpc.core.loadbalance.LoadBalance;
-import com.wxy.rpc.core.loadbalance.RandomLoadBalance;
-import com.wxy.rpc.core.loadbalance.RoundRobinLoadBalance;
+import com.wxy.rpc.core.loadbalance.impl.RandomLoadBalance;
+import com.wxy.rpc.core.loadbalance.impl.RoundRobinLoadBalance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -60,8 +60,11 @@ public class RpcClientAutoConfiguration {
      *
      * @param environment 当前应用的环境（支持 yaml、properties 等文件格式）
      * @return 返回对应的绑定属性类
+     * @deprecated 弃用，使用被 {@link org.springframework.boot.context.properties.ConfigurationProperties} 标注的属性类代替，
+     * 生成 metadata。
      */
 //    @Bean
+    @Deprecated
     public RpcClientProperties rpcClientProperties(Environment environment) {
         // 获取绑定器，将对应的属性绑定到指定类上
         BindResult<RpcClientProperties> bind = Binder.get(environment).bind("rpc.client", RpcClientProperties.class);
