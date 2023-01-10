@@ -43,3 +43,13 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+### IntelliJ IDEA ###
+.idea
+.run
+.jpb
+*.iws
+*.iml
+*.ipr
+
+### Mac ###
+.DS_Store
