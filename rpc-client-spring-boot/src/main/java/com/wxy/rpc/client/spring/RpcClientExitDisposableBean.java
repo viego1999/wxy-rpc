@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 
 /**
- * 客户端推出时执行额外操作类
+ * 客户端退出时执行额外操作类
  *
  * @author Wuxy
  * @version 1.0

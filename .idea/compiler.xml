@@ -17,9 +17,5 @@
         <module name="consumer" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="rpc-client-spring-boot-autoconfigure" target="1.8" />
-      <module name="rpc-server-spring-boot-autoconfigure" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
