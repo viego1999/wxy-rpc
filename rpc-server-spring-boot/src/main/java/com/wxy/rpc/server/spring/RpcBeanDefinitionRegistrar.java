@@ -57,7 +57,7 @@ public class RpcBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar
             rpcServiceScanner.setResourceLoader(this.resourceLoader);
         }
 
-        // 扫描包下的所有 Rpc bean 并返回注册成功的数量（scan方法会调用register方法去注册扫描到的类并生成 BeanDefinition 注册到 spring 容器
+        // 扫描包下的所有 Rpc bean 并返回注册成功的数量（scan方法会调用register方法去注册扫描到的类并生成 BeanDefinition 注册到 spring 容器）
         int count = rpcServiceScanner.scan(basePackages);
         log.info("The number of BeanDefinition scanned and registered by RpcServiceScanner is {}.", count);
     }

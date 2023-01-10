@@ -2,6 +2,7 @@ package com.wxy.rpc.client.config;
 
 import com.wxy.rpc.client.spring.RpcClientBeanPostProcessor;
 import com.wxy.rpc.client.proxy.ClientStubProxyFactory;
+import com.wxy.rpc.client.spring.RpcClientExitDisposableBean;
 import com.wxy.rpc.client.transport.RpcClient;
 import com.wxy.rpc.client.transport.http.HttpRpcClient;
 import com.wxy.rpc.client.transport.netty.NettyRpcClient;
@@ -138,6 +139,12 @@ public class RpcClientAutoConfiguration {
     @ConditionalOnMissingBean
     public RpcClientBeanPostProcessor rpcClientBeanPostProcessor(@Autowired ClientStubProxyFactory clientStubProxyFactory) {
         return new RpcClientBeanPostProcessor(clientStubProxyFactory);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RpcClientExitDisposableBean rpcClientExitDisposableBean(@Autowired ServiceDiscovery serviceDiscovery) {
+        return new RpcClientExitDisposableBean(serviceDiscovery);
     }
 
 }

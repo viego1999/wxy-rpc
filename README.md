@@ -4,7 +4,7 @@
 
 一款基于 Netty + Zookeeper + SpringBoot 实现的自定义 RPC 框架。
 
-后续考虑引入其他通信协议，例如（Http、Socket等），注册中心引入（Nacos等）。
+后续考虑引入其他通信协议，例如（Http、Socket等），注册中心引入（Nacos或Eureka等）。
 
 等完善后在补充项目描述内容，未完待续。。。。
 
@@ -171,7 +171,7 @@ JDK、JSON、HESSIAN、KRYO 、PROTOSTUFF
 
 已实现，后续补充描述......
 
-### 集成Spring通过注解进行服务注册与消费
+### 集成 Spring 自定义注解提供服务注册与消费
 
 已实现，后续补充描述......
 

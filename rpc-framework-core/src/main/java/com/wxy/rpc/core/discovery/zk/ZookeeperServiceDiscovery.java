@@ -148,7 +148,11 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
                 serviceCache.close();
             }
         }
-        serviceDiscovery.close();
-        client.close();
+        if (serviceDiscovery != null) {
+            serviceDiscovery.close();
+        }
+        if (client != null) {
+            client.close();
+        }
     }
 }
