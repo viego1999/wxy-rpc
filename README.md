@@ -204,19 +204,19 @@ RPC 框架怎么做到像调用本地接口一样调用远端服务呢？这必�
 
 - Sync 同步调用。客户端线程发起 RPC 调用后，当前线程会一直阻塞，直至服务端返回结果或者处理超时异常。Sync 同步调用一般是 RPC 框架默认的调用方式，为了保证系统可用性，客户端设置合理的超时时间是非常重要的。虽说 Sync 是同步调用，但是客户端线程和服务端线程并不是同一个线程，实际在 RPC 框架内部还是异步处理的。Sync 同步调用的过程如下图所示。
 
-![img](images\Sync同步调用.png)
+<img src="images\Sync同步调用.png" alt="Sync同步调用" style="zoom:67%;" />
 
 - Future 异步调用。客户端发起调用后不会再阻塞等待，而是拿到 RPC 框架返回的 Future 对象，调用结果会被服务端缓存，客户端自行决定后续何时获取返回结果。当客户端主动获取结果时，该过程是阻塞等待的。Future 异步调用过程如下图所示。
 
-![img](images\Future异步调用.png)
+<img src="images\Future异步调用.png" alt="Future异步调用" style="zoom:67%;" />
 
 - Callback 回调调用。如下图所示，客户端发起调用时，将 Callback 对象传递给 RPC 框架，无须同步等待返回结果，直接返回。当获取到服务端响应结果或者超时异常后，再执行用户注册的 Callback 回调。所以 Callback 接口一般包含 onResponse 和 onException 两个方法，分别对应成功返回和异常返回两种情况。
 
-![img](images\Callback回调调用.png)
+<img src="images\Callback回调调用.png" alt="Callback回调调用" style="zoom:67%;" />
 
 - Oneway 单向调用。客户端发起请求之后直接返回，忽略返回结果。Oneway 方式是最简单的，具体调用过程如下图所示。
 
-![img](images\Onway单向调用.png)
+<img src="images\Onway单向调用.png" alt="Onway单向调用" style="zoom:67%;" />
 
 四种调用方式都各有优缺点，很难说异步方式一定会比同步方式效果好，在不用的业务场景可以按需选取更合适的调用方式。
 
