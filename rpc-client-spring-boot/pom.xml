@@ -15,6 +15,7 @@
 
     <name>rpc-client-spring-boot</name>
     <url>http://maven.apache.org</url>
+    <description> rpc-client 应用，整合了 rpc-client 和 autoconfigure 模块</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

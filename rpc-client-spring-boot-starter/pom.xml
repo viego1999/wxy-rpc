@@ -14,6 +14,7 @@
     <name>rpc-client-spring-boot-stater</name>
     <version>1.0.0</version>
     <url>http://maven.apache.org</url>
+    <description>rpc-client 的 Starter 模块</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,6 +30,15 @@
             <groupId>com.wxy.rpc</groupId>
             <artifactId>rpc-framework-core</artifactId>
             <version>${rpc.version}</version>
+        </dependency>
+        <!-- 引入 configuration-processor -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure-processor</artifactId>
         </dependency>
     </dependencies>
 
