@@ -1,0 +1,3 @@
+random=com.wxy.rpc.core.loadbalance.impl.RandomLoadBalance
+roundRobin=com.wxy.rpc.core.loadbalance.impl.RoundRobinLoadBalance
+consistentHash=com.wxy.rpc.core.loadbalance.impl.ConsistentHashLoadBalance

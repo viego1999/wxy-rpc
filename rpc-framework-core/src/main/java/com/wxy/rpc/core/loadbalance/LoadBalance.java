@@ -2,6 +2,7 @@ package com.wxy.rpc.core.loadbalance;
 
 import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.ServiceInfo;
+import com.wxy.rpc.core.extension.SPI;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @author Wuxy
  * @version 1.0
  */
+@SPI
 public interface LoadBalance {
 
     /**

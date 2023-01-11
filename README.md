@@ -185,7 +185,9 @@ public class LengthFieldBasedFrameDecoder {
 
 性能对比图，单位为 nanos：
 
-<img src="images\序列化性能对比.png" alt="项目架构图" style="zoom:100%;" />
+<img src="images\序列化性能对比.png" alt="序列化性能对比" style="zoom:100%;" />
+
+<img src="images\序列化性能比较.png" alt="序列化性能比较图" style="zoom:100%;" />
 
 测试环境：
 
@@ -356,6 +358,10 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
 
 - 长连接：避免了每次调用新建TCP连接，提高了调用的响应速度
 - 多路复用：单个TCP连接可交替传输多个请求和响应的消息，降低了连接的等待闲置时间，从而减少了同样并发数下的网络连接数，提高了系统吞吐量。
+
+### 实现了 SPI 机制
+
+已实现，后续补充描述......
 
 ## 环境搭建
 
