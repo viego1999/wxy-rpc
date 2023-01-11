@@ -38,7 +38,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
     protected void channelRead0(ChannelHandlerContext ctx, RpcMessage msg) throws Exception {
         try {
             MessageType type = MessageType.parseByType(msg.getHeader().getMessageType());
-            // 如果是 RpcRequest 请求额
+            // 如果是 RpcRequest 请求
             if (type == MessageType.RESPONSE) {
                 int sequenceId = msg.getHeader().getSequenceId();
                 // 拿到还未执行完成的 promise 对象

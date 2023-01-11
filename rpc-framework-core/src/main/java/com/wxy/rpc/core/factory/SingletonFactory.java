@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @ClassName SingletonFactory
  * @Date 2023/1/6 19:16
  */
-public class SingletonFactory {
+public final class SingletonFactory {
     private static final Map<String, Object> OBJECT_MAP = new ConcurrentHashMap<>();
 
     public static <T> T getInstance(Class<T> clazz) {

@@ -25,7 +25,12 @@ public enum SerializationType {
     /**
      * KRYO 序列化算法
      */
-    KRYO((byte) 3);
+    KRYO((byte) 3),
+
+    /**
+     * PROTOSTUFF 序列化算法
+     */
+    PROTOSTUFF((byte) 4);
 
     /**
      * 类型

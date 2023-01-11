@@ -157,15 +157,37 @@ public class LengthFieldBasedFrameDecoder {
 
 序列化对于远程调用的响应速度、吞吐量、网络带宽消耗等同样也起着至关重要的作用，是我们提升分布式系统性能的最关键因素之一。
 
+判断一个编码框架的优劣主要从以下几个方面：
+
+```undefined
+1. 是否支持跨语言，支持语种是否丰富
+2. 编码后的码流
+3. 编解码的性能
+4. 类库是否小巧，API使用是否方便
+5. 使用者开发的工作量和难度。
+```
+
 #### 实现
 
 本项目实现了五种序列化算法，分别是：
 
-JDK、JSON、HESSIAN、KRYO 、PROTOSTUFF
+**JDK、JSON、HESSIAN、KRYO 、PROTOSTUFF**，其中JSON使用的是Gson实现，此外还可以使用FastJson、Jackson等实现JSON序列化。
 
 五种序列化算法的比较如下：
 
-后续补充......
+| 序列化算法     | **优点**                 | **缺点**         |
+| -------------- | ------------------------ | ---------------- |
+| **Kryo**       | 速度快，序列化后体积小   | 跨语言支持较复杂 |
+| **Hessian**    | 默认支持跨语言           | 较慢             |
+| **Protostuff** | 速度快，基于protobuf     | 需静态编译       |
+| **Json**       | 使用方便                 | 性能一般         |
+| **Java**       | 使用方便，可序列化所有类 | 速度慢，占空间   |
+
+性能对比图，单位为 nanos：
+
+<img src="images\序列化性能对比.png" alt="项目架构图" style="zoom:100%;" />
+
+测试环境：
 
 ### 负载均衡算法
 
@@ -204,7 +226,7 @@ RPC 框架怎么做到像调用本地接口一样调用远端服务呢？这必�
 
 ### RPC调用方式
 
-#### 概述：
+#### 概述
 
 成熟的 RPC 框架一般会提供四种调用方式，分别为同步 Sync、异步 Future、回调 Callback和单向 Oneway。RPC 框架的性能和吞吐量与合理使用调用方式是息息相关的，下面我们逐一介绍下四种调用方式的实现原理。
 
@@ -226,9 +248,93 @@ RPC 框架怎么做到像调用本地接口一样调用远端服务呢？这必�
 
 四种调用方式都各有优缺点，很难说异步方式一定会比同步方式效果好，在不用的业务场景可以按需选取更合适的调用方式。
 
-#### 实现：
+#### 实现
 
-本项目实现的是第一种 Sync 同步调用。
+本项目实现的是第一种 Sync 同步调用。具体的实现逻辑在类 `com.wxy.rpc.client.transport.netty.NettyRpcClient` 中，使用 `io.netty.util.concurrent.Promise` 去接受响应结果，将暂未处理的`RpcResponse`根据`sequenceId`信息存入`ConcurrentHashMap` 中，`RpcResponseHadler` 根据 `sequenceId` 取出 `Promise` 对象存储的未处理的响应消息，处理后通过设置 `promise`的状态来`notify`等待结果的线程并返回，核心代码如下：
+
+```java
+public class NettyRpcClient implements RpcClient {
+    
+	// ....
+    
+    @Override
+    public RpcMessage sendRpcRequest(RequestMetadata requestMetadata) {
+        // 构建接收返回结果的 promise
+        Promise<RpcMessage> promise;
+        // 获取 Channel 对象
+        Channel channel = getChannel(new InetSocketAddress(requestMetadata.getServerAddr(), requestMetadata.getPort()));
+        if (channel.isActive()) {
+            // 创建 promise 来接受结果         指定执行完成通知的线程
+            promise = new DefaultPromise<>(channel.eventLoop());
+            // 获取请求的序列号 ID
+            int sequenceId = requestMetadata.getRpcMessage().getHeader().getSequenceId();
+            // 存入还未处理的请求
+            RpcResponseHandler.UNPROCESSED_RP_RESPONSES.put(sequenceId, promise);
+            // 发送数据并监听发送状态
+            channel.writeAndFlush(requestMetadata.getRpcMessage()).addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    log.info("The client send the message successfully, msg: [{}].", requestMetadata);
+                } else {
+                    future.channel().close();
+                    promise.setFailure(future.cause());
+                    log.error("The client send the message failed.", future.cause());
+                }
+            });
+            // 等待结果返回（让出cpu资源，同步阻塞调用线程main，其他线程去执行获取操作（eventLoop））
+            promise.await();
+            if (promise.isSuccess()) {
+                // 返回响应结果
+                return promise.getNow();
+            } else {
+                throw new RpcException(promise.cause());
+            }
+        } else {
+            throw new IllegalStateException("The channel is inactivate.");
+        }
+    }
+    
+    // ....
+    
+}
+```
+
+```java
+public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> {
+
+    /**
+     * 存放未处理的响应请求
+     */
+    public static final Map<Integer, Promise<RpcMessage>> UNPROCESSED_RP_RESPONSES = new ConcurrentHashMap<>();
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, RpcMessage msg) throws Exception {
+        try {
+            MessageType type = MessageType.parseByType(msg.getHeader().getMessageType());
+            // 如果是 RpcRequest 请求
+            if (type == MessageType.RESPONSE) {
+                int sequenceId = msg.getHeader().getSequenceId();
+                // 拿到还未执行完成的 promise 对象
+                Promise<RpcMessage> promise = UNPROCESSED_RP_RESPONSES.remove(sequenceId);
+                if (promise != null) {
+                    Exception exception = ((RpcResponse) msg.getBody()).getExceptionValue();
+                    if (exception == null) {
+                        promise.setSuccess(msg);
+                    } else {
+                        promise.setFailure(exception);
+                    }
+                }
+            } else if (type == MessageType.HEARTBEAT_RESPONSE) { // 如果是心跳检查请求
+                log.info("Heartbeat info {}.", msg.getBody());
+            }
+        } finally {
+            // 释放内存，防止内存泄漏
+            ReferenceCountUtil.release(msg);
+        }
+    }
+    
+    // ......
+}
+```
 
 ### 集成 Spring 自定义注解提供服务注册与消费
 

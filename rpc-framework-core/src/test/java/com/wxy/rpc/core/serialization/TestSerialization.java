@@ -33,7 +33,7 @@ public class TestSerialization {
         request.setParameterValues(new Object[]{"zhangsan"});
 
         RpcMessage protocol = new RpcMessage();
-        MessageHeader header = MessageHeader.build("KRYO");
+        MessageHeader header = MessageHeader.build("PROTOSTUFF");
         protocol.setHeader(header);
         protocol.setBody(request);
 
@@ -52,10 +52,11 @@ public class TestSerialization {
         buf.writeInt(bytes.length);
         buf.writeBytes(bytes);
         /*
-         * JDK      369B
-         * JSON     156B
-         * HESSIAN  226B
-         * KRYO     99B
+         * JDK          369B
+         * JSON         156B
+         * HESSIAN      226B
+         * KRYO         99B
+         * PROTOSTUFF   144B
          */
         embeddedChannel.writeInbound(buf); // decode
     }

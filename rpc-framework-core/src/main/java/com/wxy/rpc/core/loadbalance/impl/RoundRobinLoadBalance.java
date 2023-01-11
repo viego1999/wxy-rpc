@@ -2,8 +2,7 @@ package com.wxy.rpc.core.loadbalance.impl;
 
 import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.ServiceInfo;
-import com.wxy.rpc.core.exception.LoadBalanceException;
-import com.wxy.rpc.core.loadbalance.LoadBalance;
+import com.wxy.rpc.core.loadbalance.AbstractLoadBalance;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,15 +15,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @ClassName RoundRobinLoadBalance
  * @Date 2023/1/8 12:14
  */
-public class RoundRobinLoadBalance implements LoadBalance {
+public class RoundRobinLoadBalance extends AbstractLoadBalance {
 
     private static final AtomicInteger atomicInteger = new AtomicInteger(0);
 
     @Override
-    public ServiceInfo select(List<ServiceInfo> invokers, RpcRequest request) {
-        if (invokers == null || invokers.isEmpty()) {
-            throw new LoadBalanceException("The service list is empty.");
-        }
+    public ServiceInfo doSelect(List<ServiceInfo> invokers, RpcRequest request) {
         return invokers.get(getAndIncrement() % invokers.size());
     }
 
