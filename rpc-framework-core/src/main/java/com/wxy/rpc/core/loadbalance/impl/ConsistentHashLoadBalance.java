@@ -14,7 +14,8 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 一致性哈希负载均衡算法，参考：
+ * 一致性哈希负载均衡算法 <p>
+ * 参考：
  * <a href="https://github.com/apache/dubbo/blob/2d9583adf26a2d8bd6fb646243a9fe80a77e65d5/dubbo-cluster/src/main/java/org/apache/dubbo/rpc/cluster/loadbalance/ConsistentHashLoadBalance.java">dubbo一致性哈希算法</a>
  *
  * @author Wuxy
@@ -30,7 +31,7 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
     public ServiceInfo doSelect(List<ServiceInfo> invokers, RpcRequest request) {
         // 得到请求的方法名称
         String method = request.getMethod();
-        // 构建对应的 key 值
+        // 构建对应的 key 值，key = 全限定类名 + "." + 方法名，比如 com.xxx.DemoService.sayHello
         String key = request.getServiceName() + "." + method;
         // 获取 invokers 原始的 hashCode
         int identityHashCode = System.identityHashCode(invokers);
@@ -97,7 +98,7 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
          * 进行 md5 运算，返回摘要字节数组
          *
          * @param key 编码字符串 key
-         * @return 编码后的摘要内容
+         * @return 编码后的摘要内容，长度为 16 的字节数组
          */
         private byte[] md5(String key) {
             MessageDigest md;

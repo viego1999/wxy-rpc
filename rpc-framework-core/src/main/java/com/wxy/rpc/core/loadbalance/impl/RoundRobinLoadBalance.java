@@ -18,13 +18,28 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RoundRobinLoadBalance implements LoadBalance {
 
-    private static final AtomicInteger current = new AtomicInteger(0);
+    private static final AtomicInteger atomicInteger = new AtomicInteger(0);
 
     @Override
     public ServiceInfo select(List<ServiceInfo> invokers, RpcRequest request) {
         if (invokers == null || invokers.isEmpty()) {
             throw new LoadBalanceException("The service list is empty.");
         }
-        return invokers.get(current.getAndIncrement() % invokers.size());
+        return invokers.get(getAndIncrement() % invokers.size());
     }
+
+    /**
+     * 返回当前值并加一，通过 CAS 原子更新，当当前值到达 {@link Integer#MAX_VALUE} 时，重新设值为 0
+     *
+     * @return 返回当前的值
+     */
+    public final int getAndIncrement() {
+        int prev, next;
+        do {
+            prev = atomicInteger.get();
+            next = prev == Integer.MAX_VALUE ? 0 : prev + 1;
+        } while (!atomicInteger.compareAndSet(prev, next));
+        return prev;
+    }
+
 }

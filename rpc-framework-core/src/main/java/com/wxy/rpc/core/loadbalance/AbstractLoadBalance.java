@@ -6,6 +6,8 @@ import com.wxy.rpc.core.common.ServiceInfo;
 import java.util.List;
 
 /**
+ * 负载均衡算法抽象类，定义实现负载均衡的 doSelect 方法
+ *
  * @author Wuxy
  * @version 1.0
  * @ClassName AbstractLoadBalance
