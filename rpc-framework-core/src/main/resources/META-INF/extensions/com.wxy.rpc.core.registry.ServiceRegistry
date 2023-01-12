@@ -1,0 +1,2 @@
+zk=com.wxy.rpc.core.registry.zk.ZookeeperServiceRegistry
+nacos=com.wxy.rpc.core.registry.nacos.NacosServiceRegistry

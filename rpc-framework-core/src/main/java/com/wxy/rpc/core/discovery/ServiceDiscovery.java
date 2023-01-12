@@ -2,6 +2,7 @@ package com.wxy.rpc.core.discovery;
 
 import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.ServiceInfo;
+import com.wxy.rpc.core.extension.SPI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
  * @ClassName ServiceDiscovery
  * @Date 2023/1/5 21:05
  */
+@SPI
 public interface ServiceDiscovery {
 
     /**

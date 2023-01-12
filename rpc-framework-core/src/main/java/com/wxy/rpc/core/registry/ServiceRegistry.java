@@ -1,6 +1,7 @@
 package com.wxy.rpc.core.registry;
 
 import com.wxy.rpc.core.common.ServiceInfo;
+import com.wxy.rpc.core.extension.SPI;
 
 import java.io.IOException;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
  * @ClassName ServiceRegistry
  * @Date 2023/1/5 21:06
  */
+@SPI
 public interface ServiceRegistry {
 
     /**

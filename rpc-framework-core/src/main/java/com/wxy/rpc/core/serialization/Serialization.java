@@ -1,5 +1,8 @@
 package com.wxy.rpc.core.serialization;
 
+import com.wxy.rpc.core.extension.SPI;
+
+@SPI
 public interface Serialization {
 
     /**

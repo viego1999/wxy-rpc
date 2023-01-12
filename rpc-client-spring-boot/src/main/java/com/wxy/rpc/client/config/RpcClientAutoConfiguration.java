@@ -6,6 +6,7 @@ import com.wxy.rpc.client.spring.RpcClientExitDisposableBean;
 import com.wxy.rpc.client.transport.RpcClient;
 import com.wxy.rpc.client.transport.http.HttpRpcClient;
 import com.wxy.rpc.client.transport.netty.NettyRpcClient;
+import com.wxy.rpc.client.transport.socket.SocketRpcClient;
 import com.wxy.rpc.core.discovery.ServiceDiscovery;
 import com.wxy.rpc.core.discovery.nacos.NacosServiceDiscovery;
 import com.wxy.rpc.core.discovery.zk.ZookeeperServiceDiscovery;
@@ -127,6 +128,13 @@ public class RpcClientAutoConfiguration {
     @ConditionalOnProperty(prefix = "rpc.client", name = "transport", havingValue = "http")
     public RpcClient httpRpcClient() {
         return new HttpRpcClient();
+    }
+
+    @Bean(name = "rpcClient")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "rpc.client", name = "transport", havingValue = "socket")
+    public RpcClient socketRpcClient() {
+        return new SocketRpcClient();
     }
 
     @Bean

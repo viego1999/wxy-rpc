@@ -1,0 +1,2 @@
+zk=com.wxy.rpc.core.discovery.zk.ZookeeperServiceDiscovery
+nacos=com.wxy.rpc.core.discovery.nacos.NacosServiceDiscovery

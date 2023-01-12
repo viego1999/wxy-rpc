@@ -8,6 +8,7 @@ package com.wxy.rpc.core.extension;
  * @ClassName ExtensionFactory
  * @Date 2023/1/11 22:30
  */
+@SPI
 public interface ExtensionFactory {
 
     /**

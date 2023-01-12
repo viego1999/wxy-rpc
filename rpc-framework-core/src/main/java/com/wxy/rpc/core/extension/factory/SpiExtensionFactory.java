@@ -15,7 +15,7 @@ public class SpiExtensionFactory implements ExtensionFactory {
     public <T> T getExtension(Class<?> type, String name) {
         if (type.isInterface() && type.isAnnotationPresent(SPI.class)) {
             ExtensionLoader<?> extensionLoader = ExtensionLoader.getExtensionLoader(type);
-
+            // todo: implement this method
         }
         return null;
     }

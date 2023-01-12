@@ -7,6 +7,7 @@ import com.wxy.rpc.server.spring.RpcServerBeanPostProcessor;
 import com.wxy.rpc.server.transport.RpcServer;
 import com.wxy.rpc.server.transport.http.HttpRpcServer;
 import com.wxy.rpc.server.transport.netty.NettyRpcServer;
+import com.wxy.rpc.server.transport.socket.SocketRpcServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -55,6 +56,13 @@ public class RpcServerAutoConfiguration {
     @ConditionalOnProperty(prefix = "rpc.server", name = "transport", havingValue = "http")
     public RpcServer httpRpcServer() {
         return new HttpRpcServer();
+    }
+
+    @Bean(name = "rpcServer")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "rpc.server", name = "transport", havingValue = "socket")
+    public RpcServer socketRpcServer() {
+        return new SocketRpcServer();
     }
 
     // 当没有配置通信协议属性时，默认使用 netty 作为通讯协议

@@ -35,6 +35,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcMessage> {
 
     private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 10, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10000));
 
+    @SuppressWarnings("Duplicates")
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcMessage msg) throws Exception {
         threadPool.submit(() -> {
