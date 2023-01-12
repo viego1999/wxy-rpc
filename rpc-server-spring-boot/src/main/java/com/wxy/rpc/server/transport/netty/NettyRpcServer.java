@@ -2,7 +2,6 @@ package com.wxy.rpc.server.transport.netty;
 
 import com.wxy.rpc.core.codec.RpcFrameDecoder;
 import com.wxy.rpc.core.codec.SharableRpcMessageCodec;
-import com.wxy.rpc.server.handler.RpcRequestHandler;
 import com.wxy.rpc.server.transport.RpcServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -63,7 +62,7 @@ public class NettyRpcServer implements RpcServer {
                             ch.pipeline().addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
                             ch.pipeline().addLast(new RpcFrameDecoder());
                             ch.pipeline().addLast(new SharableRpcMessageCodec());
-                            ch.pipeline().addLast(new RpcRequestHandler());
+                            ch.pipeline().addLast(new NettyRpcRequestHandler());
                         }
                     });
             // 绑定端口，同步等待绑定成功

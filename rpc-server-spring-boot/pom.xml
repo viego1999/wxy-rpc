@@ -41,6 +41,12 @@
             <optional>true</optional>
             <version>${rpc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+            <optional>true</optional>
+        </dependency>
         <!-- 一些可选的，但强烈建议使用的注解解析器 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

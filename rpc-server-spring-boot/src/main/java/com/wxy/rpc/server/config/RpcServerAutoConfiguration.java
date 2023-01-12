@@ -10,6 +10,7 @@ import com.wxy.rpc.server.transport.netty.NettyRpcServer;
 import com.wxy.rpc.server.transport.socket.SocketRpcServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -54,6 +55,7 @@ public class RpcServerAutoConfiguration {
     @Bean(name = "rpcServer")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "rpc.server", name = "transport", havingValue = "http")
+    @ConditionalOnClass(org.apache.catalina.startup.Tomcat.class)
     public RpcServer httpRpcServer() {
         return new HttpRpcServer();
     }
