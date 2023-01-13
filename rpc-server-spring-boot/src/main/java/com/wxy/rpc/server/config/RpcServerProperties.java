@@ -2,7 +2,6 @@ package com.wxy.rpc.server.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
  * 服务端配置属性类（必须提供 getter、setter 方法，否则无法注入属性值）

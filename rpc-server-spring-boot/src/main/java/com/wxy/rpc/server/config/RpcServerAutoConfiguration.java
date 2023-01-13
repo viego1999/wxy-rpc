@@ -55,7 +55,7 @@ public class RpcServerAutoConfiguration {
     @Bean(name = "rpcServer")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "rpc.server", name = "transport", havingValue = "http")
-    @ConditionalOnClass(org.apache.catalina.startup.Tomcat.class)
+    @ConditionalOnClass(name = {"org.apache.catalina.startup.Tomcat"})
     public RpcServer httpRpcServer() {
         return new HttpRpcServer();
     }
