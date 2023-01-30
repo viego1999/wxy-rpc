@@ -3,6 +3,7 @@ package com.wxy.rpc.server.annotation;
 import com.wxy.rpc.server.spring.RpcBeanDefinitionRegistrar;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 
@@ -31,6 +32,13 @@ public @interface RpcComponentScan {
     /**
      * 扫描包路径
      */
+    @AliasFor("basePackages")
+    String[] value() default {};
+
+    /**
+     * 扫描包路径
+     */
+    @AliasFor("value")
     String[] basePackages() default {};
 
 }
