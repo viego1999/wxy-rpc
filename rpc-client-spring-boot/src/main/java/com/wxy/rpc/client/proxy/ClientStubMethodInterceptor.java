@@ -3,19 +3,20 @@ package com.wxy.rpc.client.proxy;
 import com.wxy.rpc.client.config.RpcClientProperties;
 import com.wxy.rpc.client.transport.RpcClient;
 import com.wxy.rpc.core.discovery.ServiceDiscovery;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
- * 基于 JDK 动态代理的客户端方法调用处理器类
+ * 基于 Cglib 动态代理的客户端方法调用处理器类
  *
  * @author Wuxy
  * @version 1.0
- * @ClassName ClientStubInvocationHandler
- * @Date 2023/1/7 14:03
+ * @ClassName ClientStubMethodInterceptor
+ * @since 2023/2/7 9:35
  */
-public class ClientStubInvocationHandler implements InvocationHandler {
+public class ClientStubMethodInterceptor implements MethodInterceptor {
 
     /**
      * 服务发现中心
@@ -37,8 +38,7 @@ public class ClientStubInvocationHandler implements InvocationHandler {
      */
     private final String serviceName;
 
-
-    public ClientStubInvocationHandler(ServiceDiscovery serviceDiscovery, RpcClient rpcClient, RpcClientProperties properties, String serviceName) {
+    public ClientStubMethodInterceptor(ServiceDiscovery serviceDiscovery, RpcClient rpcClient, RpcClientProperties properties, String serviceName) {
         this.serviceDiscovery = serviceDiscovery;
         this.rpcClient = rpcClient;
         this.properties = properties;
@@ -46,7 +46,7 @@ public class ClientStubInvocationHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
         // 执行远程方法调用
         return RemoteMethodCall.remoteCall(serviceDiscovery, rpcClient, serviceName, properties, method, args);
     }

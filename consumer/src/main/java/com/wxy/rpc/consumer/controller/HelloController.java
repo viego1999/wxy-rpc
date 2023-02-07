@@ -1,5 +1,6 @@
 package com.wxy.rpc.consumer.controller;
 
+import com.wxy.rpc.api.service.AbstractService;
 import com.wxy.rpc.api.service.HelloService;
 import com.wxy.rpc.client.annotation.RpcReference;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,10 @@ public class HelloController {
     @RpcReference
     private HelloService helloService;
 
+    @RpcReference
+    private AbstractService abstractService;
+
+
     @RequestMapping("/hello/{name}")
     public String hello(@PathVariable("name") String name) {
 
@@ -38,5 +43,10 @@ public class HelloController {
         }
         result.put("耗时", System.currentTimeMillis() - start);
         return result;
+    }
+
+    @RequestMapping("/abstracthello/{name}")
+    public String abstractHello(@PathVariable("name") String name) {
+        return abstractService.abstractHello(name);
     }
 }

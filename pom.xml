@@ -37,6 +37,7 @@
         <protostuff.version>1.8.0</protostuff.version>
         <junit.version>3.8.1</junit.version>
         <tomcat.version>9.0.22</tomcat.version>
+        <cglib.version>3.1</cglib.version>
     </properties>
 
     <dependencyManagement>

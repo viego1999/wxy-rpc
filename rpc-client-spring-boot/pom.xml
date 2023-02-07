@@ -35,6 +35,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
         <!-- 设置为可选依赖，由 starter 进行引入，增加可扩展性 -->
         <dependency>
             <groupId>com.wxy.rpc</groupId>
