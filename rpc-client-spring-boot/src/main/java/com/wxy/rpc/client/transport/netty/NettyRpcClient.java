@@ -84,7 +84,7 @@ public class NettyRpcClient implements RpcClient {
             // 获取请求的序列号 ID
             int sequenceId = requestMetadata.getRpcMessage().getHeader().getSequenceId();
             // 存入还未处理的请求
-            RpcResponseHandler.UNPROCESSED_RP_RESPONSES.put(sequenceId, promise);
+            RpcResponseHandler.UNPROCESSED_RPC_RESPONSES.put(sequenceId, promise);
             // 发送数据并监听发送状态
             channel.writeAndFlush(requestMetadata.getRpcMessage()).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {

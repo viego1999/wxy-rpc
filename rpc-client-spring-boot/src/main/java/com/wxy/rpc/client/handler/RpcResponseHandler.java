@@ -32,7 +32,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
     /**
      * 存放未处理的响应请求
      */
-    public static final Map<Integer, Promise<RpcMessage>> UNPROCESSED_RP_RESPONSES = new ConcurrentHashMap<>();
+    public static final Map<Integer, Promise<RpcMessage>> UNPROCESSED_RPC_RESPONSES = new ConcurrentHashMap<>();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcMessage msg) throws Exception {
@@ -42,7 +42,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
             if (type == MessageType.RESPONSE) {
                 int sequenceId = msg.getHeader().getSequenceId();
                 // 拿到还未执行完成的 promise 对象
-                Promise<RpcMessage> promise = UNPROCESSED_RP_RESPONSES.remove(sequenceId);
+                Promise<RpcMessage> promise = UNPROCESSED_RPC_RESPONSES.remove(sequenceId);
                 if (promise != null) {
                     Exception exception = ((RpcResponse) msg.getBody()).getExceptionValue();
                     if (exception == null) {
