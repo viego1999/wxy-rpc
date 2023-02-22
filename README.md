@@ -10,6 +10,24 @@
 
 ----------------
 
+### 项目实现内容
+
+- [x] 实现基于 Netty/Socket/Http 三种方式进行网路通信
+- [x] 自定义消息协议，编解码器
+- [x] 五种序列化算法（JDK、JSON、HESSIAN、KRYO、PROTOSTUFF）
+- [x] 三种负载均衡算法（RoundRobin、Random、ConsistentHash）
+- [x] 两种动态代理（JDK、CGLIB）
+- [x] 基于 Zookeeper 的服务注册与发现，增加服务本地缓存与监听
+- [x] 集成 Spring，自定义注解提供 RPC 组件扫描、服务注册、服务消费
+- [x] 集成 SpringBoot，完成自动配置
+- [x] 增加 Netty 心跳机制，复用 Channel 连接
+- [x] 实现自定义 SPI 机制
+- [x] 10000个线程同时发起RPC调用的吞吐量在 29300 上下
+
+----
+
+### RPC概述
+
 RPC 又称远程过程调用（Remote Procedure Call），用于解决分布式系统中服务之间的调用问题。通俗地讲，就是开发者能够像调用本地方法一样调用远程的服务。一个最基本的RPC框架的基本架构如下图所示：
 
 <img src="images\简单RPC架构图.png" alt="简单RPC架构图" style="zoom: 45%;" />
@@ -55,17 +73,6 @@ RPC框架一般必须包含三个组件，分别是**客户端、服务端**以�
 4、然后启动 Consumer 模块，通过 Controller 去访问服务进行 rpc 调用了。
 
 ## 项目实现的主要内容
-
-- [x] 自定义消息协议，编解码器
-- [x] 五种序列化算法（JDK、JSON、HESSIAN、KRYO、PROTOSTUFF）
-- [x] 三种负载均衡算法（RoundRobin、Random、ConsistentHash）
-- [x] 两种动态代理（JDK、CGLIB）
-- [x] 基于 Zookeeper 的服务注册与发现，增加服务本地缓存与监听
-- [x] 集成 Spring，自定义注解提供 RPC 组件扫描、服务注册、服务消费
-- [x] 集成 SpringBoot，完成自动配置
-- [x] 增加 Netty 心跳机制，复用 Channel 连接
-- [x] 实现自定义 SPI 机制
-- [x] 10000个线程同时发起RPC调用的吞吐量在 29300 上下
 
 ### 自定义消息协议，编解码
 
