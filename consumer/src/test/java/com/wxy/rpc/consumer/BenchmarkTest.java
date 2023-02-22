@@ -1,5 +1,10 @@
 package com.wxy.rpc.consumer;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import com.wxy.rpc.client.handler.RpcResponseHandler;
+import com.wxy.rpc.client.transport.netty.NettyRpcClient;
 import com.wxy.rpc.consumer.config.BenchmarkAnnotationConfig;
 import com.wxy.rpc.consumer.controller.HelloController;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +14,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.concurrent.TimeUnit;
@@ -32,6 +38,15 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class BenchmarkTest {
     private final HelloController helloController;
+
+    static {
+        // 初始化时设置 NettyRpcClient 和 RpcResponseHandler 的日志类级别为 OFF，及关闭日志打印
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        Logger clientLogger = loggerContext.getLogger(NettyRpcClient.class);
+        clientLogger.setLevel(Level.OFF);
+        Logger handlerLogger = loggerContext.getLogger(RpcResponseHandler.class);
+        handlerLogger.setLevel(Level.OFF);
+    }
 
     public BenchmarkTest() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BenchmarkAnnotationConfig.class);

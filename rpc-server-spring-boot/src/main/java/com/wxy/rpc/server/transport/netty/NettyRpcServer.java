@@ -53,7 +53,7 @@ public class NettyRpcServer implements RpcServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     // 表示系统用于临时存放已完成三次握手的请求的队列的最大长度,如果连接建立频繁，服务器处理创建新连接较慢，可以适当调大这个参数
                     .option(ChannelOption.SO_BACKLOG, 128)
-                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .handler(new LoggingHandler(LogLevel.DEBUG))
                     // 当客户端第一次请求时才会进行初始化
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -67,7 +67,7 @@ public class NettyRpcServer implements RpcServer {
                     });
             // 绑定端口，同步等待绑定成功
             ChannelFuture channelFuture = serverBootstrap.bind(inetAddress, port).sync();
-            log.info("Rpc server add {} started on the port {}.", inetAddress, port);
+            log.debug("Rpc server add {} started on the port {}.", inetAddress, port);
             // 等待服务端监听端口关闭
             channelFuture.channel().closeFuture().sync();
         } catch (UnknownHostException | InterruptedException e) {

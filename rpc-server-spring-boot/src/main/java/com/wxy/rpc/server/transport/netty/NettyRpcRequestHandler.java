@@ -48,7 +48,7 @@ public class NettyRpcRequestHandler extends SimpleChannelInboundHandler<RpcMessa
                 RpcMessage responseRpcMessage = new RpcMessage();
                 MessageHeader header = msg.getHeader();
                 MessageType type = MessageType.parseByType(header.getMessageType());
-                log.info("The message received by the server is: {}", msg.getBody());
+                log.debug("The message received by the server is: {}", msg.getBody());
                 // 如果是心跳检测请求信息
                 if (type == MessageType.HEARTBEAT_REQUEST) {
                     header.setMessageType(MessageType.HEARTBEAT_RESPONSE.getType());
@@ -99,7 +99,7 @@ public class NettyRpcRequestHandler extends SimpleChannelInboundHandler<RpcMessa
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.READER_IDLE) {
-                log.info("idle check happen, so close the connection.");
+                log.warn("idle check happen, so close the connection.");
                 ctx.close();
             }
         } else {

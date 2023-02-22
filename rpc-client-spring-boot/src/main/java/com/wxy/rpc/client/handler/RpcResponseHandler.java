@@ -52,7 +52,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
                     }
                 }
             } else if (type == MessageType.HEARTBEAT_RESPONSE) { // 如果是心跳检查请求
-                log.info("Heartbeat info {}.", msg.getBody());
+                log.debug("Heartbeat info {}.", msg.getBody());
             }
         } finally {
             // 释放内存，防止内存泄漏

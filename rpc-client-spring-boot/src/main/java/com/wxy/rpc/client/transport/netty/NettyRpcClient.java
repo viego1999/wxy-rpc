@@ -88,7 +88,7 @@ public class NettyRpcClient implements RpcClient {
             // 发送数据并监听发送状态
             channel.writeAndFlush(requestMetadata.getRpcMessage()).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    log.info("The client send the message successfully, msg: [{}].", requestMetadata);
+                    log.debug("The client send the message successfully, msg: [{}].", requestMetadata);
                 } else {
                     future.channel().close();
                     promise.setFailure(future.cause());
@@ -126,7 +126,7 @@ public class NettyRpcClient implements RpcClient {
         CompletableFuture<Channel> completableFuture = new CompletableFuture<>();
         bootstrap.connect(inetSocketAddress).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                log.info("The client has successfully connected to server [{}]!", inetSocketAddress.toString());
+                log.debug("The client has successfully connected to server [{}]!", inetSocketAddress.toString());
                 completableFuture.complete(future.channel());
             } else {
                 throw new RpcException(String.format("The client failed to connect to [%s].", inetSocketAddress.toString()));
