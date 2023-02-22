@@ -4,9 +4,9 @@
 
 一款基于 Netty + Zookeeper + SpringBoot 实现的自定义 RPC 框架。
 
-后续考虑引入其他通信协议，例如（Http、Socket等），注册中心引入（Nacos或Eureka等）。
+同时引入其他通信协议，有 Http、Socket 等，注册中心引入了 Zookeeper、Nacos、Eureka等。
 
-等完善后在补充项目描述内容，未完待续。。。。
+基于 JMH 压测在 10000 并发量下的吞吐量在 29300 上下。
 
 ----------------
 
@@ -55,6 +55,17 @@ RPC框架一般必须包含三个组件，分别是**客户端、服务端**以�
 4、然后启动 Consumer 模块，通过 Controller 去访问服务进行 rpc 调用了。
 
 ## 项目实现的主要内容
+
+- [x] 自定义消息协议，编解码器
+- [x] 五种序列化算法（JDK、JSON、HESSIAN、KRYO、PROTOSTUFF）
+- [x] 三种负载均衡算法（RoundRobin、Random、ConsistentHash）
+- [x] 两种动态代理（JDK、CGLIB）
+- [x] 基于 Zookeeper 的服务注册与发现，增加服务本地缓存与监听
+- [x] 集成 Spring，自定义注解提供 RPC 组件扫描、服务注册、服务消费
+- [x] 集成 SpringBoot，完成自动配置
+- [x] 增加 Netty 心跳机制，复用 Channel 连接
+- [x] 实现自定义 SPI 机制
+- [x] 10000个线程同时发起RPC调用的吞吐量在 29300 上下
 
 ### 自定义消息协议，编解码
 
@@ -212,7 +223,7 @@ RPC 框架怎么做到像调用本地接口一样调用远端服务呢？这必�
 - Cglib 动态代理。Cglib 是基于 ASM 字节码生成框架实现的，通过字节码技术生成的代理类，所以代理类的类型是不受限制的。而且 Cglib 生成的代理类是继承于被代理类，所以可以提供更加灵活的功能。在代理方法方面，Cglib 是有优势的，它采用了 FastClass 机制，为代理类和被代理类各自创建一个 Class，这个 Class 会为代理类和被代理类的方法分配 index 索引，FastClass 就可以通过 index 直接定位要调用的方法，并直接调用，这是一种空间换时间的优化思路。
 - Javassist 和 ASM。二者都是 Java 字节码操作框架，使用起来难度较大，需要开发者对 Class 文件结构以及 JVM 都有所了解，但是它们都比反射的性能要高。Byte Buddy 也是一个字节码生成和操作的类库，Byte Buddy 功能强大，相比于 Javassist 和 ASM，Byte Buddy 提供了更加便捷的 API，用于创建和修改 Java 类，无须理解字节码的格式，而且 Byte Buddy 更加轻量，性能更好。
 
-本项目实现的是 JDK动态代理。
+本项目实现了 【JDK动态代理】 和 【CGLIB 动态代理】。
 
 ### 服务注册与发现
 
@@ -225,6 +236,8 @@ RPC 框架怎么做到像调用本地接口一样调用远端服务呢？这必�
 为了避免上述问题，实现服务优雅下线比较好的方式是采用主动通知 + 心跳检测的方案。除了主动通知注册中心下线外，还需要增加节点与注册中心的心跳检测功能，这个过程也叫作探活。心跳检测可以由节点或者注册中心负责，例如注册中心可以向服务节点每 60s 发送一次心跳包，如果 3 次心跳包都没有收到请求结果，可以任务该服务节点已经下线。
 
 由此可见，采用注册中心的好处是可以解耦客户端和服务端之间错综复杂的关系，并且能够实现对服务的动态管理。服务配置可以支持动态修改，然后将更新后的配置推送到客户端和服务端，无须重启任何服务。
+
+本项目目前实现了以 Zookeeper 为注册中心，后续考虑引入 Nacos、Redis 等实现服务注册于发现功能。
 
 ### RPC调用方式
 
@@ -271,7 +284,7 @@ public class NettyRpcClient implements RpcClient {
             // 获取请求的序列号 ID
             int sequenceId = requestMetadata.getRpcMessage().getHeader().getSequenceId();
             // 存入还未处理的请求
-            RpcResponseHandler.UNPROCESSED_RP_RESPONSES.put(sequenceId, promise);
+            RpcResponseHandler.UNPROCESSED_RPC_RESPONSES.put(sequenceId, promise);
             // 发送数据并监听发送状态
             channel.writeAndFlush(requestMetadata.getRpcMessage()).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
@@ -306,7 +319,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
     /**
      * 存放未处理的响应请求
      */
-    public static final Map<Integer, Promise<RpcMessage>> UNPROCESSED_RP_RESPONSES = new ConcurrentHashMap<>();
+    public static final Map<Integer, Promise<RpcMessage>> UNPROCESSED_RPC_RESPONSES = new ConcurrentHashMap<>();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcMessage msg) throws Exception {
@@ -316,7 +329,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
             if (type == MessageType.RESPONSE) {
                 int sequenceId = msg.getHeader().getSequenceId();
                 // 拿到还未执行完成的 promise 对象
-                Promise<RpcMessage> promise = UNPROCESSED_RP_RESPONSES.remove(sequenceId);
+                Promise<RpcMessage> promise = UNPROCESSED_RPC_RESPONSES.remove(sequenceId);
                 if (promise != null) {
                     Exception exception = ((RpcResponse) msg.getBody()).getExceptionValue();
                     if (exception == null) {
@@ -340,28 +353,273 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
 
 ### 集成 Spring 自定义注解提供服务注册与消费
 
-已实现，后续补充描述......
+- @RpcComponentScan - 扫描被 @RpcService 标注的组件并将对应的 BeanDefiniton 对象注册到Spring。
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Import(RpcBeanDefinitionRegistrar.class)
+public @interface RpcComponentScan {
+    // ......
+}
+```
+
+```java
+public class RpcBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
+
+    // ......
+
+    /**
+     * 此方法会在 spring 自定义扫描执行之后执行，这个时候 beanDefinitionMap 已经有扫描到的 beanDefinition 对象了
+     *
+     * @param annotationMetadata annotation metadata of the importing class
+     * @param registry           current bean definition registry
+     */
+    @Override
+    public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
+        // 获取 RpcComponentScan 注解的属性和值
+        AnnotationAttributes annotationAttributes = AnnotationAttributes
+                .fromMap(annotationMetadata.getAnnotationAttributes(RpcComponentScan.class.getName()));
+        String[] basePackages = {};
+        if (annotationAttributes != null) {
+            // 此处去获取RpcComponentScan 注解的 basePackages 值
+            basePackages = annotationAttributes.getStringArray("basePackages");
+        }
+        // 如果没有指定名称的话
+        if (basePackages.length == 0) {
+            basePackages = new String[]{((StandardAnnotationMetadata) annotationMetadata).getIntrospectedClass().getPackage().getName()};
+        }
+        // 创建一个浏览 RpcService 注解的 Scanner
+        // 备注：此处可以继续扩展，例如扫描 spring bean 或者其他类型的 Scanner
+        RpcClassPathBeanDefinitionScanner rpcServiceScanner = new RpcClassPathBeanDefinitionScanner(registry, RpcService.class);
+
+        if (this.resourceLoader != null) {
+            rpcServiceScanner.setResourceLoader(this.resourceLoader);
+        }
+
+        // 扫描包下的所有 Rpc bean 并返回注册成功的数量（scan方法会调用register方法去注册扫描到的类并生成 BeanDefinition 注册到 spring 容器）
+        int count = rpcServiceScanner.scan(basePackages);
+        log.info("The number of BeanDefinition scanned and registered by RpcServiceScanner is {}.", count);
+    }
+}
+```
+
+- @RpcService - 该注解用来标注需要暴露的服务实现类，被标注的类将会被注入到 Spring 容器中，同时将对应服务信息注册到远程注册中心；
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+public @interface RpcService {
+    // ......
+}
+```
+
+```java
+public class RpcServerBeanPostProcessor implements BeanPostProcessor, CommandLineRunner {
+
+    // .......
+    
+    /**
+     * 在 bean 实例化后，初始化后，检测标注有 @RpcService 注解的类，将对应的服务类进行注册，对外暴露服务，同时进行本地服务注册
+     *
+     * @param bean     bean
+     * @param beanName beanName
+     * @return 返回增强后的 bean
+     * @throws BeansException Bean 异常
+     */
+    @SneakyThrows
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        // 判断当前 bean 是否被 @RpcService 注解标注
+        if (bean.getClass().isAnnotationPresent(RpcService.class)) {
+            log.info("[{}] is annotated with [{}].", bean.getClass().getName(), RpcService.class.getCanonicalName());
+            // 获取到该类的 @RpcService 注解
+            RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
+            String interfaceName;
+            if ("".equals(rpcService.interfaceName())) {
+                interfaceName = rpcService.interfaceClass().getName();
+            } else {
+                interfaceName = rpcService.interfaceName();
+            }
+            String version = rpcService.version();
+            String serviceName = ServiceUtil.serviceKey(interfaceName, version);
+            // 构建 ServiceInfo 对象
+            ServiceInfo serviceInfo = ServiceInfo.builder()
+                    .appName(properties.getAppName())
+                    .serviceName(serviceName)
+                    .version(version)
+                    .address(InetAddress.getLocalHost().getHostAddress())
+                    .port(properties.getPort())
+                    .build();
+            // 进行远程服务注册
+            serviceRegistry.register(serviceInfo);
+            // 进行本地服务缓存注册
+            LocalServiceCache.addService(serviceName, bean);
+        }
+        return bean;
+    }
+}
+```
+
+- @RpcReference - 服务注入注解，被标注的属性将自动注入服务的实现类（基于动态代理实现）
+
+```java
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+public @interface RpcReference {
+    // ......
+}
+```
+
+```java
+public class RpcClientBeanPostProcessor implements BeanPostProcessor {
+
+    // ......
+
+    /**
+     * 在 bean 实例化完后，扫描 bean 中需要进行 rpc 注入的属性，将对应的属性使用 代理对象 进行替换
+     *
+     * @param bean     bean 对象
+     * @param beanName bean 名称
+     * @return 后置增强后的 bean 对象
+     * @throws BeansException bean 异常
+     */
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        // 获取该 bean 的类的所有属性（getFields - 获取所有的public属性，getDeclaredFields - 获取所有声明的属性，不区分访问修饰符）
+        Field[] fields = bean.getClass().getDeclaredFields();
+        // 遍历所有属性
+        for (Field field : fields) {
+            // 判断是否被 RpcReference 注解标注
+            if (field.isAnnotationPresent(RpcReference.class)) {
+                // 获得 RpcReference 注解
+                RpcReference rpcReference = field.getAnnotation(RpcReference.class);
+                // 默认类为属性当前类型
+                // filed.class = java.lang.reflect.Field
+                // filed.type = com.wxy.xxx.service.XxxService
+                Class<?> clazz = field.getType();
+                try {
+                    // 如果指定了全限定类型接口名
+                    if (!"".equals(rpcReference.interfaceName())) {
+                        clazz = Class.forName(rpcReference.interfaceName());
+                    }
+                    // 如果指定了接口类型
+                    if (rpcReference.interfaceClass() != void.class) {
+                        clazz = rpcReference.interfaceClass();
+                    }
+                    // 获取指定类型的代理对象
+                    Object proxy = proxyFactory.getProxy(clazz, rpcReference.version());
+                    // 关闭安全检查
+                    field.setAccessible(true);
+                    // 设置域的值为代理对象
+                    field.set(bean, proxy);
+                } catch (ClassNotFoundException | IllegalAccessException e) {
+                    throw new RpcException(String.format("Failed to obtain proxy object, the type of field %s is %s, " +
+                            "and the specified loaded proxy type is %s.", field.getName(), field.getClass(), clazz), e);
+                }
+            }
+        }
+        return bean;
+    }
+}
+```
 
 ### 集成 SpringBoot 完成自动配置
 
-已实现，后续补充描述......
+实现 `rpc-client` 和 `rpc-server` 的 `starter` 模块，编写对应的自动配置的配置类以及 `spring.factories` 文件，引入对应的`starter` 即可完成自动配置功能。
 
 ### 增加 Netty 心跳机制
 
 解决了每次请求客户端都要重新与服务端建立 netty 连接，非常耗时，增加心跳检查机制，保持长连接，复用 channel 连接；
 
-已实现，后续补充描述......
+- 长连接：避免了每次调用新建TCP连接，提高了调用的响应速度；
+- Channel 连接复用：避免重复连接服务端；
+- 多路复用：单个TCP连接可交替传输多个请求和响应的消息，降低了连接的等待闲置时间，从而减少了同样并发数下的网络连接数，提高了系统吞吐量。
+
+具体实现代码在
+
+ `com.wxy.rpc.client.transport.netty.NettyRpcClient`，`com.wxy.rpc.client.transport.netty.ChannelProvider` 和   `com.wxy.rpc.server.transport.netty.NettyRpcRequestHandler`三个类中。
 
 ### 增加 Zookeeper 服务本地缓存并监听
 
 解决了每次请求都需要访问 zk 来进行服务发现，可以添加本地服务缓存功能，然后监听 zk 服务节点的变化来动态更新本地服务列表。
 
-- 长连接：避免了每次调用新建TCP连接，提高了调用的响应速度
-- 多路复用：单个TCP连接可交替传输多个请求和响应的消息，降低了连接的等待闲置时间，从而减少了同样并发数下的网络连接数，提高了系统吞吐量。
+服务本地缓存并监听的核心代码如下：
+
+```java
+public class ZookeeperServiceDiscovery implements ServiceDiscovery {
+    
+    // ....
+    
+    @Override
+    public List<ServiceInfo> getServices(String serviceName) throws Exception {
+        if (!serviceMap.containsKey(serviceName)) {
+            // 构建本地服务缓存
+            ServiceCache<ServiceInfo> serviceCache = serviceDiscovery.serviceCacheBuilder()
+                    .name(serviceName)
+                    .build();
+            // 添加服务监听，当服务发生变化时主动更新本地缓存并通知
+            serviceCache.addListener(new ServiceCacheListener() {
+                @Override
+                public void cacheChanged() {
+                    log.info("The service [{}] cache has changed. The current number of service samples is {}."
+                            , serviceName, serviceCache.getInstances().size());
+                    // 更新本地缓存的服务列表
+                    serviceMap.put(serviceName, serviceCache.getInstances().stream()
+                            .map(ServiceInstance::getPayload)
+                            .collect(Collectors.toList()));
+                }
+
+                @Override
+                public void stateChanged(CuratorFramework client, ConnectionState newState) {
+                    // 当连接状态发生改变时，只打印提示信息，保留本地缓存的服务列表
+                    log.info("The client {} connection status has changed. The current status is: {}."
+                            , client, newState);
+                }
+            });
+            // 开启服务缓存监听
+            serviceCache.start();
+            // 将服务缓存对象存入本地
+            serviceCacheMap.put(serviceName, serviceCache);
+            // 将服务列表缓存到本地
+            serviceMap.put(serviceName, serviceCacheMap.get(serviceName).getInstances()
+                    .stream()
+                    .map(ServiceInstance::getPayload)
+                    .collect(Collectors.toList()));
+        }
+        return serviceMap.get(serviceName);
+    }
+    
+    // ....
+    
+}
+```
+
+
 
 ### 实现了 SPI 机制
 
-已实现，后续补充描述......
+已实现，参考Dubbo部分源码，实现了自定义的SPI机制，目前仅支持根据接口类型加载配置文件中的所有具体的扩展实现类，并且可以根据指定的key获取特定的实现类，具体实现类逻辑在 `com.wxy.rpc.core.extension.ExtensionLoader` 中。
+
+服务存储目录在 `resource/META-INF/extensions`
+
+<img src="C:\Users\Wuxy\AppData\Roaming\Typora\typora-user-images\image-20230222120620124.png" alt="image-20230222120620124" style="zoom: 67%;" />
+
+文件内容格式如下：
+
+```config
+protostuff=com.wxy.rpc.core.serialization.protostuff.ProtostuffSerialization
+kryo=com.wxy.rpc.core.serialization.kryo.KryoSerialization
+json=com.wxy.rpc.core.serialization.json.JsonSerialization
+jdk=com.wxy.rpc.core.serialization.jdk.JdkSerialization
+hessian=com.wxy.rpc.core.serialization.hessian.HessianSerialization
+```
 
 ## 环境搭建
 
@@ -376,8 +634,73 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcMessage> 
 - 启动 Zookeeper 服务器：进入到zk的bin目录，输入命令 `./zkServer.sh`
 - 启动 provider 模块 ProviderApplication
 - 启动 consumer 模块 ConsumerApplication
-- 测试：浏览器输入 http://localhost:8080/hello/zhangsan，成功返回：`hello, zhangsan`, rpc 调用成功
+- 测试：浏览器输入 http://localhost:8080/hello/zhangsan ，成功返回：`hello, zhangsan`，rpc 调用成功。
+- 调用接口 100 次耗时 26ms，调用 10_0000 次耗时 25164 ms。
 
-## 流程
+## 压力测试
 
-......
+**[JMH](https://zhuanlan.zhihu.com/p/434083702)**
+
+`JMH`即`Java Microbenchmark Harness`，是`Java`用来做基准测试的一个工具，该工具由`OpenJDK`提供并维护，测试结果可信度高。
+
+相对于 Jmeter、ab ，它通过编写代码的方式进行压测，在特定场景下会更能评估某项性能。
+
+本次通过使用 JMH 来压测 RPC 的性能（官方也是使用JMH压测）
+
+启动 10000 个线程同时访问 sayHello 接口，总共进行 3 轮测试，测试结果如下：
+
+```
+Benchmark                                          Mode     Cnt      Score       Error  Units
+BenchmarkTest.testSayHello                        thrpt       3  29288.573 ± 20780.318  ops/s
+BenchmarkTest.testSayHello                         avgt       3      0.532 ±     6.159   s/op
+BenchmarkTest.testSayHello                       sample  395972      0.382 ±     0.002   s/op
+BenchmarkTest.testSayHello:testSayHello·p0.00    sample              0.003               s/op
+BenchmarkTest.testSayHello:testSayHello·p0.50    sample              0.318               s/op
+BenchmarkTest.testSayHello:testSayHello·p0.90    sample              0.387               s/op
+BenchmarkTest.testSayHello:testSayHello·p0.95    sample              0.840               s/op
+BenchmarkTest.testSayHello:testSayHello·p0.99    sample              2.282               s/op
+BenchmarkTest.testSayHello:testSayHello·p0.999   sample              2.470               s/op
+BenchmarkTest.testSayHello:testSayHello·p0.9999  sample              2.496               s/op
+BenchmarkTest.testSayHello:testSayHello·p1.00    sample              2.508               s/op
+BenchmarkTest.testSayHello                           ss       3      0.118 ±     0.051   s/op
+```
+
+测试曲线图：
+
+![image-20230222195611909](C:\Users\Wuxy\AppData\Roaming\Typora\typora-user-images\image-20230222195611909.png)
+
+同时，在同样的条件下，启动 5000（1w个电脑会卡死） 个线程同时对 **Dubbo2.7.14** 发起 RPC 调用，得到的结果如下：
+
+```
+Benchmark                                       Mode     Cnt      Score      Error  Units
+StressTest.testSayHello                        thrpt       3  41549.866 ± 9703.455  ops/s
+StressTest.testSayHello                         avgt       3      0.119 ±    0.034   s/op
+StressTest.testSayHello                       sample  611821      0.123 ±    0.001   s/op
+StressTest.testSayHello:testSayHello·p0.00    sample              0.042              s/op
+StressTest.testSayHello:testSayHello·p0.50    sample              0.119              s/op
+StressTest.testSayHello:testSayHello·p0.90    sample              0.129              s/op
+StressTest.testSayHello:testSayHello·p0.95    sample              0.139              s/op
+StressTest.testSayHello:testSayHello·p0.99    sample              0.195              s/op
+StressTest.testSayHello:testSayHello·p0.999   sample              0.446              s/op
+StressTest.testSayHello:testSayHello·p0.9999  sample              0.455              s/op
+StressTest.testSayHello:testSayHello·p1.00    sample              0.456              s/op
+StressTest.testSayHello                           ss       3      0.058 ±    0.135   s/op
+```
+
+![image-20230222202356224](C:\Users\Wuxy\AppData\Roaming\Typora\typora-user-images\image-20230222202356224.png)
+
+**结果**：
+
+|            | RPC     | RPC   | Dubbo2.7.14 |
+| ---------- | ------- | ----- | ----------- |
+| 并发数     | 10000   | 5000  | 5000        |
+| TPS        | 29288   | 31675 | 41549       |
+| RTT        | 95% 8ms | xxx   | 95% 50ms    |
+| AVGTime/OP | 0.532   | 0.532 | 0.119       |
+| OOM        | 无      | 无    | 无          |
+
+对比了 jmeter、Apache-Benmark（ab）、jmh 这三个压测工具，个人比较推荐使用jmh，原因有：
+
+- jmh压测简单，只需要引入依赖，声明注解
+- 准确性高，目前大多数性能压测都是使用jmh
+- 缺点就是代码入侵

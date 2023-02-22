@@ -1,4 +1,4 @@
-package com.wxy.rpc;
+package com.wxy.rpc.consumer;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

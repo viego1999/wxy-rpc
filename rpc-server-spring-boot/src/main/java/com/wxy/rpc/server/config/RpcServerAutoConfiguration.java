@@ -33,6 +33,17 @@ public class RpcServerAutoConfiguration {
     @Autowired
     RpcServerProperties properties;
 
+    /**
+     * 创建 ServiceRegistry 实例 bean，当没有配置时默认使用 zookeeper 作为配置中心
+     */
+    @Bean(name = "serviceRegistry")
+    @Primary
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "rpc.server", name = "registry", havingValue = "zookeeper", matchIfMissing = true)
+    public ServiceRegistry zookeeperServiceRegistry() {
+        return new ZookeeperServiceRegistry(properties.getRegistryAddr());
+    }
+
     @Bean(name = "serviceRegistry")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "rpc.server", name = "registry", havingValue = "nacos")
@@ -40,16 +51,13 @@ public class RpcServerAutoConfiguration {
         return new NacosServiceRegistry(properties.getRegistryAddr());
     }
 
-    /**
-     * 创建 ServiceRegistry 实例 bean，当没有配置时默认使用 zookeeper 作为配置中心
-     */
-    @Bean(name = "serviceRegistry")
+    // 当没有配置通信协议属性时，默认使用 netty 作为通讯协议
+    @Bean(name = "rpcServer")
     @Primary
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "rpc.server", name = "registry", havingValue = "zookeeper")
-    public ServiceRegistry zookeeperServiceRegistry() {
-
-        return new ZookeeperServiceRegistry(properties.getRegistryAddr());
+    @ConditionalOnProperty(prefix = "rpc.server", name = "transport", havingValue = "netty", matchIfMissing = true)
+    public RpcServer nettyRpcServer() {
+        return new NettyRpcServer();
     }
 
     @Bean(name = "rpcServer")
@@ -65,15 +73,6 @@ public class RpcServerAutoConfiguration {
     @ConditionalOnProperty(prefix = "rpc.server", name = "transport", havingValue = "socket")
     public RpcServer socketRpcServer() {
         return new SocketRpcServer();
-    }
-
-    // 当没有配置通信协议属性时，默认使用 netty 作为通讯协议
-    @Bean(name = "rpcServer")
-    @Primary
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "rpc.server", name = "transport", havingValue = "netty")
-    public RpcServer nettyRpcServer() {
-        return new NettyRpcServer();
     }
 
     @Bean

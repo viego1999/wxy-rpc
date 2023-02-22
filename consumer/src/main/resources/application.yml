@@ -8,3 +8,8 @@ rpc:
     registry: zookeeper
     registry-addr: 39.108.66.202:2181
     timeout: 5000
+
+# 设置控制台日志显示级别
+logging:
+  level:
+    com.wxy.rpc: info

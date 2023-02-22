@@ -79,7 +79,7 @@ public class RpcClientAutoConfiguration {
     @Bean(name = "loadBalance")
     @Primary
     @ConditionalOnMissingBean // 不指定 value 则值默认为当前创建的类
-    @ConditionalOnProperty(prefix = "rpc.client", name = "loadbalance", havingValue = "random")
+    @ConditionalOnProperty(prefix = "rpc.client", name = "loadbalance", havingValue = "random", matchIfMissing = true)
     public LoadBalance randomLoadBalance() {
         return new RandomLoadBalance();
     }
@@ -102,7 +102,7 @@ public class RpcClientAutoConfiguration {
     @Primary
     @ConditionalOnMissingBean
     @ConditionalOnBean(LoadBalance.class)
-    @ConditionalOnProperty(prefix = "rpc.client", name = "registry", havingValue = "zookeeper")
+    @ConditionalOnProperty(prefix = "rpc.client", name = "registry", havingValue = "zookeeper", matchIfMissing = true)
     public ServiceDiscovery zookeeperServiceDiscovery(@Autowired LoadBalance loadBalance) {
         return new ZookeeperServiceDiscovery(rpcClientProperties.getRegistryAddr(), loadBalance);
     }
@@ -118,7 +118,7 @@ public class RpcClientAutoConfiguration {
     @Bean(name = "rpcClient")
     @Primary
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "rpc.client", name = "transport", havingValue = "netty")
+    @ConditionalOnProperty(prefix = "rpc.client", name = "transport", havingValue = "netty", matchIfMissing = true)
     public RpcClient nettyRpcClient() {
         return new NettyRpcClient();
     }
