@@ -609,7 +609,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
 
 服务存储目录在 `resource/META-INF/extensions`
 
-<img src="C:\Users\Wuxy\AppData\Roaming\Typora\typora-user-images\image-20230222120620124.png" alt="image-20230222120620124" style="zoom: 67%;" />
+<img src="images\spi服务目录.png" alt="image-20230222120620124" style="zoom: 67%;" />
 
 文件内容格式如下：
 
@@ -667,7 +667,7 @@ BenchmarkTest.testSayHello                           ss       3      0.118 ±   
 
 测试曲线图：
 
-![image-20230222195611909](C:\Users\Wuxy\AppData\Roaming\Typora\typora-user-images\image-20230222195611909.png)
+![image-20230222195611909](images\rpc10000并发测试结果.png)
 
 同时，在同样的条件下，启动 5000（1w个电脑会卡死） 个线程同时对 **Dubbo2.7.14** 发起 RPC 调用，得到的结果如下：
 
@@ -687,7 +687,7 @@ StressTest.testSayHello:testSayHello·p1.00    sample              0.456        
 StressTest.testSayHello                           ss       3      0.058 ±    0.135   s/op
 ```
 
-![image-20230222202356224](C:\Users\Wuxy\AppData\Roaming\Typora\typora-user-images\image-20230222202356224.png)
+![image-20230222202356224](images\dubbo10000并发测试结果.png)
 
 **结果**：
 
