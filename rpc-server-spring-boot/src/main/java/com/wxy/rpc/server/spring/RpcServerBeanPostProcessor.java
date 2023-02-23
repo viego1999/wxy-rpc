@@ -14,7 +14,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.CommandLineRunner;
 
 import java.io.IOException;
-import java.net.InetAddress;
 
 /**
  * Rpc Server Bean Processor class
@@ -66,7 +65,7 @@ public class RpcServerBeanPostProcessor implements BeanPostProcessor, CommandLin
                     .appName(properties.getAppName())
                     .serviceName(serviceName)
                     .version(version)
-                    .address(InetAddress.getLocalHost().getHostAddress())
+                    .address(properties.getAddress())
                     .port(properties.getPort())
                     .build();
             // 进行远程服务注册

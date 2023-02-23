@@ -34,13 +34,13 @@ public class SocketRpcRequestHandler implements Runnable {
     @SuppressWarnings("Duplicates")
     @Override
     public void run() {
-        log.info("The server handle client message by thread {}.", Thread.currentThread().getName());
+        log.debug("The server handle client message by thread {}.", Thread.currentThread().getName());
         try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
             // 注意：SocketServer 接受和发送的数据为：RpcRequest, RpcResponse
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             // 直接读取客户端发送过来的 RpcRequest，此时不需要进行编解码，无需消息协议
             RpcRequest request = (RpcRequest) ois.readObject();
-            log.info("The server received message is {}.", request);
+            log.debug("The server received message is {}.", request);
             // 创建一个 RpcResponse 对象用来响应给客户端
             RpcResponse response = new RpcResponse();
             // 处理请求
@@ -53,7 +53,7 @@ public class SocketRpcRequestHandler implements Runnable {
                 // 若不设置，堆栈信息过多，导致报错
                 response.setExceptionValue(new RpcException("Error in remote procedure call, " + e.getMessage()));
             }
-            log.info("The response is {}.", response);
+            log.debug("The response is {}.", response);
             oos.writeObject(response);
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("The socket server failed to handle client rpc request.", e);

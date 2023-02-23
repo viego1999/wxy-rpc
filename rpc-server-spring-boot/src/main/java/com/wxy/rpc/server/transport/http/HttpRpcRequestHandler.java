@@ -37,7 +37,7 @@ public class HttpRpcRequestHandler {
             ObjectOutputStream oos = new ObjectOutputStream(resp.getOutputStream());
             // 读取客户端请求
             RpcRequest request = (RpcRequest) ois.readObject();
-            log.info("The server received message is {}.", request);
+            log.debug("The server received message is {}.", request);
             // 创建一个 RpcResponse 对象来响应客户端
             RpcResponse response = new RpcResponse();
             // 处理请求
@@ -50,7 +50,7 @@ public class HttpRpcRequestHandler {
                 // 若不设置，堆栈信息过多，导致报错
                 response.setExceptionValue(new RpcException("Error in remote procedure call, " + e.getMessage()));
             }
-            log.info("The response is {}.", response);
+            log.debug("The response is {}.", response);
             oos.writeObject(response);
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("The http server failed to handle client rpc request.", e);

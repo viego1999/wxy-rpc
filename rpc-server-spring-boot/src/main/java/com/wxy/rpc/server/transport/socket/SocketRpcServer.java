@@ -45,7 +45,7 @@ public class SocketRpcServer implements RpcServer {
             Socket socket;
             // 循环接受客户端 Socket 连接（accept为阻塞时等待连接）
             while ((socket = serverSocket.accept()) != null) {
-                log.info("The client connected [{}].", socket.getInetAddress());
+                log.debug("The client connected [{}].", socket.getInetAddress());
                 threadPool.execute(new SocketRpcRequestHandler(socket));
             }
             // 服务端连断开，关闭线程池

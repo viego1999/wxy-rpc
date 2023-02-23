@@ -3,6 +3,9 @@ package com.wxy.rpc.server.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * 服务端配置属性类（必须提供 getter、setter 方法，否则无法注入属性值）
  *
@@ -14,6 +17,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "rpc.server")
 public class RpcServerProperties {
+
+    /**
+     * The service provider address, default is {@link InetAddress#getHostAddress()}.
+     */
+    private String address;
 
     /**
      * The service startup port is 8080 by default
@@ -31,7 +39,7 @@ public class RpcServerProperties {
     private String registry;
 
     /**
-     * Transmission protocols, such as netty and http, are netty by default
+     * Transmission protocols, such as netty, http or socket etc..., are netty by default
      */
     private String transport;
 
@@ -43,7 +51,8 @@ public class RpcServerProperties {
     /**
      * 进行默认初始化值
      */
-    public RpcServerProperties() {
+    public RpcServerProperties() throws UnknownHostException {
+        this.address = InetAddress.getLocalHost().getHostAddress();
         this.port = 8080;
         this.appName = "provider-1";
         this.registry = "zookeeper";
