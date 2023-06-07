@@ -3,8 +3,6 @@ package com.wxy.rpc.core.registry;
 import com.wxy.rpc.core.common.ServiceInfo;
 import com.wxy.rpc.core.extension.SPI;
 
-import java.io.IOException;
-
 /**
  * 服务注册中心接口
  *
@@ -33,6 +31,6 @@ public interface ServiceRegistry {
     /**
      * 关闭与服务注册中心的连接
      */
-    void destroy() throws IOException;
+    void destroy() throws Exception;
 
 }

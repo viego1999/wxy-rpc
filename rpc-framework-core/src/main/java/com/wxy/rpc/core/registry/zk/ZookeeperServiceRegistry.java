@@ -12,8 +12,6 @@ import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
 
-import java.io.IOException;
-
 /**
  * Zookeeper 实现服务注册中心类
  *
@@ -99,7 +97,7 @@ public class ZookeeperServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public void destroy() throws IOException {
+    public void destroy() throws Exception {
         serviceDiscovery.close();
         client.close();
         log.info("Destroy zookeeper registry completed.");

@@ -2,7 +2,6 @@ package com.wxy.rpc.core.serialization.hessian;
 
 import com.caucho.hessian.io.HessianSerializerInput;
 import com.caucho.hessian.io.HessianSerializerOutput;
-import com.google.gson.Gson;
 import com.wxy.rpc.core.exception.SerializeException;
 import com.wxy.rpc.core.serialization.Serialization;
 

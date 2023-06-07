@@ -16,7 +16,6 @@ import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
 import org.apache.curator.x.discovery.details.ServiceCacheListener;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -144,7 +143,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
     }
 
     @Override
-    public void destroy() throws IOException {
+    public void destroy() throws Exception {
         for (ServiceCache<ServiceInfo> serviceCache : serviceCacheMap.values()) {
             if (serviceCache != null) {
                 serviceCache.close();

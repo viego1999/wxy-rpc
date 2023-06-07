@@ -13,8 +13,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.CommandLineRunner;
 
-import java.io.IOException;
-
 /**
  * Rpc Server Bean Processor class
  * <p>
@@ -91,7 +89,7 @@ public class RpcServerBeanPostProcessor implements BeanPostProcessor, CommandLin
             try {
                 // 当服务关闭之后，将服务从 注册中心 上清除（关闭连接）
                 serviceRegistry.destroy();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }));

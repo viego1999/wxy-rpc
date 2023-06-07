@@ -15,8 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 一致性哈希负载均衡算法 <p>
- * 参考：
- * <a href="https://github.com/apache/dubbo/blob/2d9583adf26a2d8bd6fb646243a9fe80a77e65d5/dubbo-cluster/src/main/java/org/apache/dubbo/rpc/cluster/loadbalance/ConsistentHashLoadBalance.java">dubbo一致性哈希算法</a>
+ * 参考：<br>
+ * <a href="https://github.com/apache/dubbo/blob/2d9583adf26a2d8bd6fb646243a9fe80a77e65d5/dubbo-cluster/src/main/java/org/apache/dubbo/rpc/cluster/loadbalance/ConsistentHashLoadBalance.java">dubbo一致性哈希算法</a><br>
+ * <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/dev/source/loadbalance/#23-consistenthashloadbalance">dubbo一致性哈希原理</a>
  *
  * @author Wuxy
  * @version 1.0

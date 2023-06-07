@@ -4,7 +4,6 @@ import com.wxy.rpc.core.common.RpcRequest;
 import com.wxy.rpc.core.common.ServiceInfo;
 import com.wxy.rpc.core.extension.SPI;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +40,6 @@ public interface ServiceDiscovery {
     /**
      * 关闭与服务注册中心的连接
      */
-    void destroy() throws IOException;
+    void destroy() throws Exception;
 
 }

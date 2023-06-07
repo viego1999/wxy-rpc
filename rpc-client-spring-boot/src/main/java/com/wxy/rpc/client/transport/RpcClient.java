@@ -1,7 +1,6 @@
 package com.wxy.rpc.client.transport;
 
 import com.wxy.rpc.client.common.RequestMetadata;
-import com.wxy.rpc.core.common.RpcResponse;
 import com.wxy.rpc.core.protocol.RpcMessage;
 
 /**

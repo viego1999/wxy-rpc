@@ -38,6 +38,7 @@
         <junit.version>3.8.1</junit.version>
         <tomcat.version>9.0.22</tomcat.version>
         <cglib.version>3.1</cglib.version>
+        <nacos.version>2.1.1</nacos.version>
     </properties>
 
     <dependencyManagement>

@@ -99,7 +99,7 @@ public class NettyRpcClient implements RpcClient {
             promise.await();
             if (promise.isSuccess()) {
                 // 返回响应结果
-                return promise.getNow();
+                return promise.getNow(); // todo：此处可以直接调用 get(long, TimeUnit)方法，实现超时重试等功能
             } else {
                 throw new RpcException(promise.cause());
             }
