@@ -64,11 +64,6 @@ public class RemoteMethodCall {
                 .port(serviceInfo.getPort())
                 .timeout(properties.getTimeout()).build();
 
-        // todo: 是否每次 invoke 方法一次都创建一个新的 RpcClient ？？？？
-
-        //  获得 RpcClient 实现类
-//        RpcClient rpcClient = RpcClientFactory.getRpcClient(properties.getTransport());
-
         // todo：此处可以实现失败重试机制
         // 发送网络请求，获取结果
         RpcMessage responseRpcMessage = rpcClient.sendRpcRequest(metadata);

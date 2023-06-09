@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * 基于 Netty 实现的 Rpc Client 类
@@ -95,11 +96,24 @@ public class NettyRpcClient implements RpcClient {
                     log.error("The client send the message failed.", future.cause());
                 }
             });
+
+            Integer timeout = requestMetadata.getTimeout();
+
             // 等待结果返回（让出cpu资源，同步阻塞调用线程main，其他线程去执行获取操作（eventLoop））
-            promise.await();
+            // 如果没有指定超时时间，则 await 直到 promise 完成
+            if (timeout == null || timeout <= 0) {
+                promise.await();
+            } else {
+                // 在指定超时时间内等待结果返回
+                boolean success = promise.await(requestMetadata.getTimeout(), TimeUnit.MILLISECONDS);
+                if (!success) {
+                    promise.setFailure(new TimeoutException(String.format("The Remote procedure call exceeded the " +
+                            "specified timeout of %dms.", timeout)));
+                }
+            }
             if (promise.isSuccess()) {
                 // 返回响应结果
-                return promise.getNow(); // todo：此处可以直接调用 get(long, TimeUnit)方法，实现超时重试等功能
+                return promise.getNow();
             } else {
                 throw new RpcException(promise.cause());
             }

@@ -5,8 +5,8 @@ rpc:
     load-balance: random
     serialization: PROTOSTUFF
     transport: netty
-    registry: nacos
-    registry-addr: 127.0.0.1:8848
+    registry: zookeeper
+    registry-addr: 39.108.66.202:2181
     timeout: 5000
 
 # 设置控制台日志显示级别
